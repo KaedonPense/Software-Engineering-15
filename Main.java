@@ -27,7 +27,7 @@ public class Main extends JFrame
         String[] Screens = {"startScreen","playerEntryScreen","gameScreen"}; 
         String ControllingScreen = Screens[0]; //On app start, screen to display is startScreen //Used in run(), switch statement of which screen is active   
                                             
-        //TODO: add startup screen constructor here. OR: if startupscreen is a function in main just call it in Main()
+        StartScreen startScreen = new StartScreen(this);
         PlayerEntryScreen playerEntry= new PlayerEntryScreen(this);     //Initilises the Player Entry Panel class. Contains the creation and controller for the class. "this" is refering to the JFrame "window" 
     
     /* @description: The main function to be called when the application is to be ran
@@ -57,7 +57,6 @@ public class Main extends JFrame
 		        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 this.setVisible(true);
             //Creation of screens
-                //TODO: add creation of startupscreen here;
                 playerEntry.createPlayerEntryScreenContent();
                 //TODO: add creation of game screen here
 
@@ -80,13 +79,11 @@ public class Main extends JFrame
                     switch(ControllingScreen)
                         {
                             case("startScreen"): //i.e Screens[0]
-                                //startup.visible(this, true) //add the startup panel to the frame //Look at playerEntry.visible for details on implenemtation. Just removes this from screen;
-                                //TODO call the "run Startup function" //THIS includes the WAIT
-                                //startup.visible(this, false) //remove the startup panel from the frame //Look at playerEntry.visible for details on implenemtation. Just removes this from screen;
+                                startScreen.run();
                                 ControllingScreen = Screens[1]; //Change the screen to display to the player entry Screen
                                 playerEntry.visible(this, true); //set the entry screen to be visible
-                                //this.pack();
-                                break;
+                                this.pack();
+                        	break;
                             case("playerEntryScreen"): //i.e Screens[1]
                                 //TODO: event handeling
                                     //On interaction
