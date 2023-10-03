@@ -20,6 +20,7 @@
     import java.awt.event.*;
     import javax.swing.table.*;
     import javax.swing.JScrollPane;
+    import javax.swing.border.Border;
     import java.awt.event.ActionListener; 
     import java.awt.event.ActionEvent;
     import java.util.Scanner;
@@ -29,192 +30,193 @@
 public class PlayerEntryScreen extends JFrame implements ActionListener// Could name this Window to be more accurate  
 {
     //Static Variables
-        static JPanel playerEntry; //The JPanel this is for. (creates and edits)
-        static JPanel scrollTextFields;
-        static JScrollPane scroll;
-        static GridBagConstraints mainGrid; //The layoutmanager for this pannel 
-        static GridBagConstraints scrollGrid;
-        static JTextField[] textField = new JTextField[90];    //An array of JTextfields, in this instance the number i%3 gives what the cell should be. = 0 -> playerID, = 1 -> Codename, =2 -> EquipmentID
-        static String[] checkData = new String[90];     //An array of the previous contents of JTextfields - updated when a cell is changed
-        static Color red = new Color(200,0,0);
-        static Color green = new Color(0,200,0);
-        static Color darkRed = red.darker();
-        static Color darkGreen = green.darker();
-        static Color gray = new Color(100,100,100);
-        static Color darkGray = gray.darker();
-        static int playerIDlength; //the required length of the player ID, use this to determine if cell is full -> do actions
-        static int equipIDlength;
-
-    /* @description: JPanel "playerEntry" constructor
-     *      @use:   creates Jpanel, sets layoutmanager gridbag and its constraints, adds to passed in JFrame
+        //Panels
+            static JPanel playerEntryPanel; //The JPanel this is for. (creates and edits)
+            static JPanel textFieldsPanel; //The panel that is inside the scroll pane. Scroll pane layouts are odd, so the JScrollPane bellow contains this object and how the contents should be displayed
+            static JScrollPane scroll; //Makes the textfields scrollable if window size too small for its contents
+        //Grids
+            static GridBagConstraints mainGrid; //The layoutmanager for this pannel 
+            static GridBagConstraints scrollGrid;
+            static GridLayout playerLayout = new GridLayout(1,3,5,0); //Grid layout for individual panels. Used when a panel that needs to contain 3 objects is created i.e for each player and for the columnHeadings    
+        //Colors
+            static Color red = new Color(200,0,0);      //main red team color
+            static Color green = new Color(0,200,0);    //main green team color
+            static Color darkRed = red.darker();        //alt red
+            static Color darkGreen = green.darker();    //alt green
+            static Color gray = new Color(100,100,100); 
+            static Color backgroundColor = gray.darker();      //main background color
+        //Fonts
+            Font headingFont = new Font("impact", Font.ITALIC, 35);
+            Font columnHeadingFont = new Font("times new roman", Font.PLAIN, 15);
+            Font textFieldFont = new Font("times new roman" , Font.PLAIN, 12);
+        //Arrays
+            static JTextField[] textField = new JTextField[90];    //An array of JTextfields, in this instance the number i%3 gives what the cell should be. = 0 -> playerID, = 1 -> Codename, =2 -> EquipmentID
+            static String[] checkData = new String[90];     //An array of the previous contents of JTextfields - updated when a cell is changed
+        //Other
+            static int playerIDlength; //the required length of the player ID, use this to determine if cell is full -> do actions
+            static int equipIDlength;
+            static Border emptyBorder = BorderFactory.createEmptyBorder(5,5,5,5); //A transparent border so something doesn't fill its panel. USED: to make collored player backgrounds visible, else the white textfield covers the panel. 
+            static Border errorBorder = BorderFactory.createBevelBorder(1, Color.BLUE, Color.BLUE, backgroundColor,gray);
+        //constructors
+            
+    
+    /* 
+     * @description: JPanel "playerEntryPanel" constructor
+     *      @use:   creates main JPanel and its main contents panels
      * @param {frame} the frame to add the panel to;
      * @return: none
      */
     PlayerEntryScreen(JFrame frame)
         {   
-            playerEntry = new JPanel();
-            playerEntry.setLayout(new GridBagLayout());
-            playerEntry.setSize(1500,2000);
-            playerEntry.setBackground(darkGray);
-            mainGrid = new GridBagConstraints();
-            mainGrid.fill = GridBagConstraints.BOTH;
-            scrollTextFields = new JPanel();
-            scrollGrid = new GridBagConstraints();
-            scrollTextFields.setLayout(new GridBagLayout());
-            scrollTextFields.setBackground(darkGray);
-            scrollGrid.fill = GridBagConstraints.BOTH;
-            //scroll = new JScrollPane();
-            //scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            //frame.add(playerEntry);
+            //Main panel
+                playerEntryPanel = new JPanel();                     //Initilize player entry panel
+                playerEntryPanel.setLayout(new GridBagLayout());     //main panel layout
+                playerEntryPanel.setBackground(backgroundColor);            //Background color
+                mainGrid = new GridBagConstraints();            //create the gridConstraints used for main
+                mainGrid.fill = GridBagConstraints.BOTH;        //Make the grid fill the panel in both directions
+            //TextFields Panel
+                textFieldsPanel = new JPanel();                 //Initilize panel to add textfields to
+                textFieldsPanel.setLayout(new GridBagLayout()); //TextFields layout
+                textFieldsPanel.setBackground(backgroundColor);        //Background color
+                scrollGrid = new GridBagConstraints();          //create gridConstraints for textFields layout  
+                scrollGrid.fill = GridBagConstraints.BOTH;
+            
         }
 
-    /* @description: Creates contents of JPanel Player Entry Screen
-     *      @use:   The panel itself is created elsewhere this just creates and adds contents
+    /* 
+     * @description: Creates contents of JPanel Player Entry Screen
+     *      @use:   The panels are created elsewhere this just creates and adds contents
      * @param: none
      * @return: none
      */
     void createPlayerEntryScreenContent()
         {
-            mainGrid.weightx = 10;
-            mainGrid.weighty = 3;
-            int columnShift = 0; //Shift columns right n cells. USE: if we want to have a column on the left for player number
+            int columnShift = 1; //Shift columns right n cells. USE: if we want to have a column on the left for player numbers. In doing so we need to make sure the Team headings are still aligned properly
             //create the labels
                 //Teams - green and red at very top of panel
                     //Initilizing How to add
-                        Font team = new Font("impact", Font.ITALIC, 35);
-                        this.gridPadding(100,100, mainGrid);
-                        this.gridFill(true,true, mainGrid);
-                    //Adding text to screen
-                        this.addJLabel("Green",1+columnShift, 0, team, green, null, mainGrid, playerEntry);
-                        this.addJLabel("Red", 4+columnShift, 0, team, red, null, mainGrid, playerEntry);
+                        this.gridPadding(100,100, mainGrid);    //Components added until this is called again have a minimum size of 100,100
+                        this.gridFill(true,true, mainGrid);     //Components added until this is called again fill their cell in both directions
+                        mainGrid.weightx = 10;                  //The weight of the components when resizing the frame; Example, given 2 objects with weight 10 and 1 respectively for every 11 units of size changed the space aloted to the first component will be (aprox) 10 times more
+                        mainGrid.weighty = 3;
+                    //Main headings
+                        this.addJLabel("Green",1+columnShift, 0, headingFont, green, null, mainGrid, playerEntryPanel); //Create new JLabel string that displays "Green" in cell (1+columnShift,0) with font headingFont, color green, no background color, using mainGrid constraints, adding to playerEntryPanel 
+                        this.addJLabel("Red", 4+columnShift, 0, headingFont, red, null, mainGrid, playerEntryPanel);    //Create new JLabel string that displays "Red" in cell (4+columnShift,0) with font headingFont, color red, no background color, using mainGrid constraints, adding to the playerEntryPanel 
                 //Column Headings - Text displayed above textfields
-                    String[] headings = {"PlayerID","Codename","EquipID"}; //The headings for cells
-                    Font headingFont = new Font("times new roman", Font.BOLD, 15);
-                        //Font //May have to change the font
-                        this.gridPadding(50,0, mainGrid); //set minimum width to (h,v);
-                        this.gridFill(true,false, mainGrid); //fill horizontally but not vertically
-                    for(int i = 0; i < 2; i++)
-                        {
-                            JPanel header = new JPanel();
-                            header.setBackground(darkGray);
-                            header.setLayout(new GridLayout(1,3,5,0));
-                            header.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-                            for(int ii = 0; ii < 3; ii++) //Adding headingss
+                    String[] headings = {"PlayerID","Codename","EquipID"}; //The headings for the columns
+                    this.gridPadding(50,0, mainGrid); //set minimum size to (50,0); //Setting minimum height here to 0 makes it so the height is equal to the height of contents. i.e doesn't add size
+                    this.gridFill(true,false, mainGrid); //fill horizontally but not vertically
+                    mainGrid.gridwidth = 3; //set the grid to take up 3 cells 
+                    for(int i = 0; i < 2; i++)  //Do this once for each team
+                        {   
+                            JPanel header = new JPanel();   //These need to be added to new panel to keep aligned with the textfields under them. Textfields later are added to panels so they have the background colors. 
+                            header.setBackground(backgroundColor);   //set background to the background color
+                            header.setLayout(playerLayout); //playerLayout is an unintuitive name in this case however, this is just to keep the layout of the columnheadings the same as their contents(players)
+                            header.setBorder(emptyBorder);  //is used to make colored panels behind players visible thus needed here to keep alignment
+                            for(int ii = 0; ii < 3; ii++) //Adding headings
                             {
-                                this.addJLabel(headings[ii], ii, 0, headingFont, Color.WHITE, null, mainGrid, header);
+                                this.addJLabel(headings[ii], ii, 0, columnHeadingFont, Color.WHITE, null, mainGrid, header); //create JLabel string displaying "headings[ii]" in cell(ii,0)(to be added to row 1 in playerEntryPanel) using columnHeading font, color white, no background, (layout isnt gridBag thus grid is irrelivant), adding to heading panel
                             }
-                            mainGrid.gridwidth = 3;
-                            this.gridCell(columnShift+i*3,1, mainGrid);
-                            playerEntry.add(header, mainGrid);
+                            this.gridCell(columnShift+i*3,1, mainGrid); //set the cell to add to mainGrid to be (columnShift + i*3 ,1) where i is 0 or 1, thus sets to cell (shift + 0, 1) or (shift + 3) or the first cell of each player.
+                            playerEntryPanel.add(header, mainGrid); //Add created and filled panel to the playerEntryPanel using the mainGrid constraint
                         }
             //create text textfields
                 //setup how to add to grid
                     scrollGrid.weightx = 5;
                     scrollGrid.weighty = 5;
-                    this.gridPadding(100,0, scrollGrid);   //set minimum width to 100   
-                    this.gridFill(true,false, scrollGrid);  //set to fill horizontally
-                Font textfieldFont = new Font("times new roman", Font.PLAIN, 15);
-                Color[] colorsToUse = {green,red,darkGreen,darkRed}; // the array of colors to use in this for loop
+                    scrollGrid.gridwidth = 3;   //fill 3 cells
+                    this.gridFill(true, true, scrollGrid);  //fill both directions
+                    this.gridPadding(0,0, scrollGrid);  //no minimum size, i.e. add components to grid using their size. 
+                Color[] colorsToUse = {green,red,darkGreen,darkRed}; // the array of colors to use in this for loop 
                 int setColor = 0; //the index of what color in colorsToUse
-                scrollGrid.gridwidth = 3;
-                this.gridFill(true, true, scrollGrid);
-                this.gridPadding(0,0, scrollGrid);
-                GridLayout playerLayout = new GridLayout(1,3,5,0);
-                for(int rowS = 0; rowS < 15; rowS++) //add row for each of 15 players per team. 1 Row includes player n from green and red team
-                {   
-                    JPanel greenPlayer = new JPanel(); //create and fill new green player fields
-                    greenPlayer.setLayout(playerLayout);
-                    greenPlayer.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-                        //Background
-                            greenPlayer.setBackground(colorsToUse[setColor]);
-                            setColor++; //change the color to red, normal or dark respectively
-                            //Shouldn't need to set layout as it should automatically set it to add filling a column then if row is full add to next row
-                        //Contents   
-                            for(int field = 0; field < 3; field++)
+                int playerNumber = 0;
+                for(int row = 0; row < 15; row++) //add row for each of 15 players per team. 1 Row includes player n from green and red team
+                    {   
+                        for(int column = columnShift; column < 5; column+=3)
                             {
-                                JTextField textbox = this.addTextField(null, 1, scrollGrid); //creates a new textField for every field the player needs. Sets text to null, columns to 1
-                                textbox.setFont(textfieldFont);
-                                textField[rowS*6 + field] = textbox;   //sets respective textbox in array equal to this textbox
-                                checkData[rowS*6 + field] = null;  //set respective "past data value" to the initial text value;
-                                greenPlayer.add(textbox); //add this textbox to the pannel.
-                            } 
-                            this.gridCell(columnShift, rowS, scrollGrid); //set to add to cell (shift, row)
-                            scrollTextFields.add(greenPlayer, scrollGrid); //add to playerEntry in respective column and row
-                    JPanel redPlayer = new JPanel(); //create and fill new red player fields
-                    redPlayer.setLayout(playerLayout);
-                    redPlayer.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-                        //Background
-                            redPlayer.setBackground(colorsToUse[setColor]);
-                            setColor++; //change color back to green, normal or dark respectively
-                            //Shouldn't need to set layout as it should automatically set it to add filling a column then if row is full add to next row
-                            if(setColor == 4)   //the last color in array was just used so go back to the start of colorsToUse.
-                                setColor = 0; 
-                        //Contents
-                            for(int field = 3; field < 6; field++)
-                            {
-                                JTextField textbox = this.addTextField(null, 1, scrollGrid); //creates a new textField for every field the player needs. Sets text to null, columns to 1
-                                textField[rowS*6 + field] = textbox;   //sets respective textbox in array equal to this textbox
-                                checkData[rowS*6 + field] = null;  //set respective "past data value" to the initial text value;
-                                redPlayer.add(textbox); //add this textbox to the panel.
+                                //Create a new player panel
+                                    JPanel player = new JPanel();       //new panel
+                                    player.setLayout(playerLayout);     //set layout of panel to playerLayout
+                                    player.setBorder(emptyBorder);      //set border to empty
+                                    player.setBackground(colorsToUse[setColor]);    //setBackground to the alternating colorsToUse
+                                //NextColor
+                                    setColor++;
+                                    if(setColor >3)
+                                        setColor = 0;
+                                for(int field = 0; field < 3; field++) //Create 3 textfields for player
+                                    {
+                                        JTextField textbox = this.addTextField(null, 1, scrollGrid); // scroll grid irrelivant as layout is not gridBag
+                                        textbox.setFont(textFieldFont);
+                                        textField[playerNumber] = textbox;  //set the relevant aray number to this
+                                        checkData[playerNumber] = null;     //initilize checkdata for the cell. i.e "last checked contents of cell"
+                                        player.add(textbox); //add each textfield to the player panel
+                                    }
+                                playerNumber++; //set next player number
+                                this.gridCell(column, row, scrollGrid); //set cell to add player panel to 
+                                textFieldsPanel.add(player, scrollGrid);    //add player panel
                             }
-                            this.gridCell(columnShift + 3, rowS, scrollGrid);  //set to add to cell (shift, i+row)
-                            scrollTextFields.add(redPlayer, scrollGrid);       //add to playerEntry in respective column
                 }
-            mainGrid.gridheight = 10;
-            mainGrid.gridwidth = 7;
-            mainGrid.weighty = 25;
-            this.gridCell(0,2,mainGrid);
-            this.gridFill(true,true,mainGrid);
-            this.gridPadding(0,0,mainGrid);
-            scrollTextFields.updateUI();
-            scroll = new JScrollPane(scrollTextFields);
-            scroll.updateUI();
-            playerEntry.add(scroll, mainGrid);
-            playerEntry.updateUI();
+            //How should scrollpanel fill player Entry Panel
+                mainGrid.gridheight = 10;
+                mainGrid.gridwidth = 7;     //ie set to add as filling all columns and 10 rows
+                mainGrid.weighty = 25;
+            this.gridCell(0,2,mainGrid); //set what cell to add scroll to 
+            this.gridFill(true,true,mainGrid);  //to fill both directions
+            this.gridPadding(0,0,mainGrid); //let it size itself
+            scroll = new JScrollPane(textFieldsPanel); //create a new JScrollPanel with its contents being the textFieldsPanel
+            playerEntryPanel.add(scroll, mainGrid); //add the scroll to the playerEntryPanel, using mainGrid constraints
 
         }
-    /* @description: sets the minimum x and y size
+    /* 
+     * @description: sets the minimum x and y size
      *      @use: Something needs to be at least a certain size
      * @param {padx} int: the minimum horizontal size to set to
      * @param {pady} int: the minimum vertical size to set to 
+     * @param {grid} GridBagConstraints: the constrainst/instructions for how to add to the gridLayout
      */
     void gridPadding(int padx, int pady, GridBagConstraints grid)
         {
         grid.ipadx = padx; //sets the gridConstraints minimum horizontal size
         grid.ipady = pady; //sets the gridConstraints minimum vertical size
         }
-    /* @description: how to fill the cell
+    /* 
+     * @description: how to fill the cell
      *      @use: changing how something fills the cell;
      * @param {horizontal} bool: wether or not to fill horizontally
      * @param {vertical} bool: wether or not to fill vertically
+     * @param {grid} GridBagConstraints: the constrainst/instructions for how to add to the gridLayout
      */
     void gridFill(boolean horizontal, boolean vertical, GridBagConstraints grid)
         {
-            if(horizontal)
+            if(horizontal)  //horizontal fill
                 grid.fill = GridBagConstraints.HORIZONTAL;
-            if(vertical)
+            if(vertical)    //vertical fill
                 grid.fill = GridBagConstraints.VERTICAL;
-            if(horizontal && vertical)
+            if(horizontal && vertical)  //fill both vertical and horizontal
                 grid.fill = GridBagConstraints.BOTH;
-            if(!horizontal && !vertical)
+            if(!horizontal && !vertical)   //dont fill any direction
                 grid.fill = GridBagConstraints.NONE;
         }
-    /* @description: what cell to add to
+    /* 
+     * @description: what cell to add to
      *      @use: changes the cell to add to when JPanel.add(what, grid) is called
      * @param {column} int: the column to add to
      * @param {row} int: the row to add to
+     * @param {grid} GridBagConstraints: the constrainst/instructions for how to add to the gridLayout
      */
     void gridCell(int column, int row, GridBagConstraints grid)
         {
-            grid.gridx = column;
+            grid.gridx = column;    //set the gridConstraints of what cell to add to 
             grid.gridy = row;
         }
-    /* @description: Create noneditable string on screen //NOTE: See other JLabel constructor bellow for a more detailed creator
+    /* 
+     * @description: Create noneditable string on screen //NOTE: See other JLabel constructor bellow for a more detailed creator
      *      @use: Creates a Jlabel(string) and adds it to layout (c,r)
      * @param {text} string: text that is to be displayed on screen
      * @param {c} integer: the column to add the JLabel to
      * @param {r} integer: the row to add the JLabel to
-     * @return {JLabel} the label created in this //NOTE: as of 9/26/23 the return isn't used for anything 
+     * @param {grid} GridBagConstraints: the constrainst/instructions for how to add to the gridLayout
+     * @param {panel} JPanel: the panel to add the label to
      */
     JLabel addJLabel(String text, int c, int r, GridBagConstraints grid, JPanel panel)
         {
@@ -223,10 +225,11 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
                 grid.gridx = c;                    
                 grid.gridy = r;
             label.setHorizontalAlignment(SwingConstants.CENTER);    //Center the text in its cell
-            panel.add(label, grid);   //add to playerEntry panel
+            panel.add(label, grid);   //add to playerEntryPanel panel
             return label;   //return statement in case need to use this label outside of this function
         }
-    /* @description: Detailed create noneditable text on screen //NOTE:if padding, font, and color are to be null use simple creator above
+    /* 
+     * description: Detailed create noneditable text on screen //NOTE:if padding, font, and color are to be null use simple creator above
      *      @use: Creates a Jlabel(string) and adds it to layout (c,r), fills the cell, sets font and color
      * @param {text} string: text that is to be displayed on screen
      * @param {c} int: the column to add the JLabel to
@@ -234,6 +237,8 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
      * @param {font} Font: the font to use : null if using default
      * @param {foreground} Color: the color of the text : null if using default
      * @param {background} Color: the color of the background, (highlight?) : null if using defalult
+     * @param {grid} GridBagConstraints: the constrainst/instructions for how to add to the gridLayout
+     * @param {panel} JPanel: the panel to add the Label to
      * @return {JLabel} the label created in this //NOTE: as of 9/26/23 the return isn't used for anything 
      */
     JLabel addJLabel(String text, int c, int r, Font font, Color foreground, Color background, GridBagConstraints grid, JPanel panel)
@@ -249,14 +254,16 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
                 if(foreground != null) //set forground, for JLabel(string) this is the text color
                     label.setForeground(foreground); 
                 if(background != null)  //set background
-                    label.setBackground(background);
+                    label.setBackground(backgroundColor);
             panel.add(label, grid);   
             return label;
         }
-    /* @description: create textbox function
+    /* 
+     * @description: create textbox function
      *      @use: creates a textbox with contents (text) with n columns in a cell and sets fill
      * @param {test} string: the text to be entered into the textbox //NOTE: If to be blank then equals null;
      * @param {columns} int: how many columns should the textbox have //NOTE: Default should be 1
+     * @param {grid} GridBagConstraints: the constrainst/instructions for how to add to the gridLayout
      * @return returns the created textfield //NOTE: this is used to initilize array textfields
      */
     JTextField addTextField(String text, int columns, GridBagConstraints grid)
@@ -264,7 +271,8 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
             JTextField textbox = new JTextField(text, columns); //create new textbox
             return textbox;
         }
-    /* @description: Runs To see what cells have changed
+    /* 
+     * @description: Runs To see what cells have changed
      *      @use: when a cell has changed make sure everything is in parameters and handle conditinals
      * @param: none
      * @return: none //NOTE: may make this return true/false if something changed
@@ -312,7 +320,8 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
                 }
             }
         }
-    /* @description: Looks through all the players and checks for invalid or duplicate values;
+    /* 
+     * @description: Looks through all the players and checks for invalid or duplicate values;
      *      @use:
      * @param 
      * @return: false if there is an error, true if there not an error
@@ -333,7 +342,7 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
                 codename = textField[player*3+1].getText();
                 equipmentID = textField[player*3+2].getText();
                 //check empty
-                String check = this.checkPlayer(playerIDs, playerNames, equipmentIDs, playerID, codename, equipmentID);
+                String check = this.checkPlayer(playerIDs, playerNames, equipmentIDs, playerID, codename, equipmentID, player);
                 if(check.equals("empty"))
                 {
                     //player is empty thus valid
@@ -346,7 +355,8 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
             }
             return !error; //if error = true return false; 
         }
-    /* @description:
+    /* 
+     * @description:
      *      @use:
      * @param
      * @return
@@ -356,7 +366,8 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
         {
             //System.out.println("Action detected");
         }
-    /* @description: Check if a player has any errors/isvalid
+    /* 
+     * @description: Check if a player has any errors/isvalid
      *      @use: Checks the values of inputed player against inputed arrays and returns appropriate string //Makes sure there are no duplicates
      * @param {pIDs} array of strings: A collection of all player ID's already ran/checked
      * @param {names} array of strings: A collection of all player codenames that have already been ran/checked
@@ -365,79 +376,106 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
      * @param {name} string: the codename to look for
      * @param {eqID} string: the equipment ID to look for
      */
-    String checkPlayer(String[] pIDs, String[] names, String[] eqIDs, String id, String name, String eqID)
+    String checkPlayer(String[] pIDs, String[] names, String[] eqIDs, String id, String name, String eqID, int playerNumber)
         {
-            String valid = "true"; 
-            //check Empty
-                if((id == null)&&(name == null)&&(eqID == null))
-                    return "empty"; //i.e. the textfield are valid
-                else
-                    {   
-                    //Checking individual null
-                        if(id == null)
-                            {
-                                valid = "false";
-                                //TODO: handle event
-                            }
-                        if(name == null)
-                            {
-                                valid = "false";
-                                //TODO: handle event
-                            }
-                        if(eqID == null)
-                            {
-                                valid = "false";
-                                //TODO: handle event
-                            }
-                    //Check against array and check length
-                        for(int i = 0; pIDs[i=1] != null; i++)
-                            {
-                            //playerID
-                                if(id.length() == playerIDlength)
-                                    {
-                                        if(pIDs[i].equals(id))
-                                        {
-                                            valid = "false";
-                                            //TODO: handle event
-                                        }
-                                    }
-                                else
+            String valid = "true"; //by defalult set to return the player is valid
+            
+            if((id == null)&&(name == null)&&(eqID == null)) //check Empty
+                return "empty"; //i.e. the textfield are valid
+            else //ie something about the player exists
+                {   
+                //Checking individual null
+                    if(id == null)
+                        {
+                            valid = "false";
+                            this.setTextFieldBorderError(playerNumber*3, true); //player is invalid because of this thus highlight the textbox
+                        }
+                    if(name == null)
+                        {
+                            valid = "false";
+                            this.setTextFieldBorderError(playerNumber*3 + 1, true);//player is invalid because of this thus highlight the textbox
+                        }
+                    if(eqID == null)
+                        {
+                            valid = "false";
+                            this.setTextFieldBorderError(playerNumber*3+2, true);//player is invalid because of this thus highlight the textbox
+                        }
+                //Check against array and check length
+                    for(int i = 0; pIDs[i+1] != null; i++)
+                        {
+                        //playerID
+                            if(id.length() == playerIDlength)
+                                {
+                                    if(pIDs[i].equals(id)) //runs 
                                     {
                                         valid = "false";
-                                        //Todo: handle event
+                                        this.setTextFieldBorderError(playerNumber*3, true); //player is invalid because of this thus highlight the textbox
                                     }
-                            //codename
-                                if(names[i].equals(name))
-                                    {
-                                        valid = "false";
-                                        //TODO: handle event
-                                    }
-                            //EquipmentID
-                                if(eqID.length() == equipIDlength)
-                                    {
-                                        if(eqIDs[i].equals(eqID))
-                                        {
-                                            valid = "false";
-                                            //TODO: handle event
-                                        }
-                                    }
-                                else
-                                    {
+                                }
+                        //codename
+                            if(names[i].equals(name))   
+                                {
                                     valid = "false";
-                                      //TODO: handle event
+                                    this.setTextFieldBorderError(playerNumber*3+1, true); //player is invalid because of this thus highlight the textbox
+                                }
+                        //EquipmentID
+                            if(eqID.length() == equipIDlength)
+                                {
+                                    if(eqIDs[i].equals(eqID))
+                                    {
+                                        valid = "false";
+                                        this.setTextFieldBorderError(playerNumber*3+2, true);
                                     }
-                            }
+                                }
+                        }
+                    if(valid.equals("true"))
+                        {
+                            //make sure that the textborders are the default
+                            this.setTextFieldBorderError(playerNumber*3,false);
+                            this.setTextFieldBorderError(playerNumber*3+1,false);
+                            this.setTextFieldBorderError(playerNumber*3+2,false);
+                        }
                     return valid;
                     }
         }
+    /*
+     * @description: adds or removes the playerEntryPanel from the inputed frame
+     *      @uses:
+     * @param: {frame} JFrame: The frame to add or remove to/from
+     * @param: {addRemove} Bool: true:add to the frame, false: remove from frame
+     * @return: none
+     */
     void visible(JFrame frame, boolean addRemove)
         {
             if(addRemove == true)
-                frame.setContentPane(playerEntry);
+                frame.setContentPane(playerEntryPanel);
             else
-                frame.remove(playerEntry);
+                frame.remove(playerEntryPanel);
         }
-
-    
-    
+    /*
+     * @description: Clears the text in textfields and the "previous data in cell"
+     *      @uses: When "new game"
+     * @param: none
+     * @return: none
+     */
+    void clearData()
+        {
+            for(int i = 0; i < 90; i++)
+                textField[i].setText(null);
+                checkData[i].setText(null);
+        }
+    /*
+     * @description: changes the border around a textField to show if there is something wrong or not
+     *      @uses:  
+     * @param: {textfield} int: the number in the textFields array to change
+     * @param: {error} bool: what to set the border to, true: there is an error thus highlight it, false: set it to the default border(emptyBorder)
+     * @return: none
+     */
+    void setTextFieldBorderError(int textfield, boolean error)
+        {
+            if(error) // if there is something wrong
+                textField[textfield].setBorder(errorBorder);
+            else
+                textField[textfield].setBorder(emptyBorder);
+        }
 }
