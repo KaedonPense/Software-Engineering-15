@@ -313,6 +313,7 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
                                     if(newData.length() == equipIDlength)
                                     {
                                         //TODO: ADDHERE: Transmit code
+                                        udpBroadcast.sendPacket(newData);
                                     };
                                     break;
                             }
