@@ -33,7 +33,7 @@ public class StartScreen extends JFrame {
     void run() {
         lbl = new JLabel(icon);
         frame.add(lbl);
-        frame.setSize(1500,1018);
+        frame.setSize(750,500);
         frame.setVisible(true);
         try {
             Thread.sleep(3000);
