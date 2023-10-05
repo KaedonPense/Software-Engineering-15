@@ -24,6 +24,7 @@
     import java.awt.event.ActionListener; 
     import java.awt.event.ActionEvent;
     import java.util.Scanner;
+    import java.io.IOException;
 
 
 
@@ -277,7 +278,7 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
      * @param: none
      * @return: none //NOTE: may make this return true/false if something changed
      */
-    void Update() 
+    void Update() throws IOException
         {
             String newData; //will be the current text in a textbox
             String oldData; //will be the text that was in the cell last time this function ran
