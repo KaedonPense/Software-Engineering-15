@@ -24,7 +24,6 @@
     import java.awt.event.ActionListener; 
     import java.awt.event.ActionEvent;
     import java.util.Scanner;
-    import java.io.IOException;
 
 
 
@@ -59,7 +58,7 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
             static Border emptyBorder = BorderFactory.createEmptyBorder(5,5,5,5); //A transparent border so something doesn't fill its panel. USED: to make collored player backgrounds visible, else the white textfield covers the panel. 
             static Border errorBorder = BorderFactory.createBevelBorder(1, Color.BLUE, Color.BLUE, backgroundColor,gray);
         //constructors
-            
+            udpBroadcast udp;
     
     /* 
      * @description: JPanel "playerEntryPanel" constructor
@@ -81,6 +80,8 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
                 textFieldsPanel.setBackground(backgroundColor);        //Background color
                 scrollGrid = new GridBagConstraints();          //create gridConstraints for textFields layout  
                 scrollGrid.fill = GridBagConstraints.BOTH;
+                udp = new udpBroadcast();
+                
             
         }
 
@@ -278,7 +279,7 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
      * @param: none
      * @return: none //NOTE: may make this return true/false if something changed
      */
-    void Update() throws IOException
+    void Update() 
         {
             String newData; //will be the current text in a textbox
             String oldData; //will be the text that was in the cell last time this function ran
@@ -314,7 +315,7 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
                                     if(newData.length() == equipIDlength)
                                     {
                                         //TODO: ADDHERE: Transmit code
-                                        udpBroadcast.sendPacket(newData);
+                                        udp.sendPacket(newData);
                                     };
                                     break;
                             }
