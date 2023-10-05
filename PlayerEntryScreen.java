@@ -461,8 +461,10 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
     void clearData()
         {
             for(int i = 0; i < 90; i++)
+            {
                 textField[i].setText(null);
-                checkData[i].setText(null);
+                checkData[i] = null;
+            }
         }
     /*
      * @description: changes the border around a textField to show if there is something wrong or not
