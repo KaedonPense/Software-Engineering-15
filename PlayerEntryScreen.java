@@ -24,6 +24,7 @@
     import java.awt.event.ActionListener; 
     import java.awt.event.ActionEvent;
     import java.util.Scanner;
+    import java.io.IOException;
 
 
 
@@ -315,7 +316,14 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
                                     if(newData.length() == equipIDlength)
                                     {
                                         //TODO: ADDHERE: Transmit code
-                                        udp.sendPacket(newData);
+                                        try
+                                        {
+                                            udp.sendPacket(newData);
+                                        }
+                                        catch(IOException e)
+                                        {
+
+                                        }
                                     };
                                     break;
                             }

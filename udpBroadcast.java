@@ -54,11 +54,11 @@ public class udpBroadcast
 			buffer = data.getBytes();
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ip, port);
 			broadcast.send(packet);
-			System.out.println("Broadcast: " + data(buffer).toString());
+			//System.out.println("Broadcast: " + data(buffer).toString());
 		}
 		else
 		{
-			System.out.println("No Data for Broadcast");
+			//System.out.println("No Data for Broadcast");
 		}
 	}
 

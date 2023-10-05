@@ -87,7 +87,14 @@ public class Main extends JFrame
                             case("playerEntryScreen"): //i.e Screens[1]
                                 //TODO: event handeling
                                     //On interaction
+                                    try
+                                    {
                                         playerEntry.Update();
+                                    }
+                                    catch(NullPointerException e)
+                                    {
+                                        
+                                    }
                                     //On continue to game screen
                                         /*  if(playerEntry.checkValidPlayersTrue)
                                          *      {   
