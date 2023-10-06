@@ -54,8 +54,8 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
             static JTextField[] textField = new JTextField[90];    //An array of JTextfields, in this instance the number i%3 gives what the cell should be. = 0 -> playerID, = 1 -> Codename, =2 -> EquipmentID
             static String[] checkData = new String[90];     //An array of the previous contents of JTextfields - updated when a cell is changed
         //Other
-            static int playerIDlength; //the required length of the player ID, use this to determine if cell is full -> do actions
-            static int equipIDlength;
+            static int playerIDlength = 5; //the required length of the player ID, use this to determine if cell is full -> do actions
+            static int equipIDlength = 5;
             static Border emptyBorder = BorderFactory.createEmptyBorder(5,5,5,5); //A transparent border so something doesn't fill its panel. USED: to make collored player backgrounds visible, else the white textfield covers the panel. 
             static Border errorBorder = BorderFactory.createBevelBorder(1, Color.BLUE, Color.BLUE, backgroundColor,gray);
         //constructors
@@ -82,6 +82,10 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
                 scrollGrid = new GridBagConstraints();          //create gridConstraints for textFields layout  
                 scrollGrid.fill = GridBagConstraints.BOTH;
                 udp = new udpBroadcast();
+
+                System.out.println("The length of valid player id's is " + playerIDlength + ".");
+                System.out.println("the length of valid equipment id's is " + equipIDlength + ".");
+                System.out.println("Found on lines 57 and 58");
                 
             
         }
@@ -150,7 +154,8 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
                                     {
                                         JTextField textbox = this.addTextField(null, 1, scrollGrid); // scroll grid irrelivant as layout is not gridBag
                                         textbox.setFont(textFieldFont);
-                                        textField[playerNumber] = textbox;  //set the relevant aray number to this
+        //System.out.println(playerNumber*3+field);
+                                        textField[playerNumber*3+field] = textbox;  //set the relevant array number to this
                                         checkData[playerNumber] = null;     //initilize checkdata for the cell. i.e "last checked contents of cell"
                                         player.add(textbox); //add each textfield to the player panel
                                     }
@@ -284,17 +289,18 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
         {
             String newData; //will be the current text in a textbox
             String oldData; //will be the text that was in the cell last time this function ran
-        
-            for(int i = 0; i < 90; i++) //check all textboxes
+            for(int i = 0; i < 90; i++)
             {
-                newData = textField[i].getText();  //get text from box
-                if(newData != null) // there is something in the cell   
+                newData = textField[i].getText().trim();  //get text from box
+                if(!newData.isEmpty()) // there is something in the cell   
                 {
                     oldData = checkData[i]; //previous data in cell
                     if(newData.equals(oldData)) // in java == checks if they are the same object not if they have the same content. ".equals()" basicly says if(valueOf == valueOf) //With == it is always false because it is checking if string == string
-                        {}
+                        {
+                        }
                     else //if the data in cell has changed
                         {
+                            //System.out.println("new data in: " + i);
                             checkData[i] = newData; //set the data of "previous data in cell" to the new cell data
                             switch(i%3) //this handles the 3 cases of what the data is in reference to. If 0 its a playerID, if 1 its a codename, if 2 its a equipmentID
                             {
