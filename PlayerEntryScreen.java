@@ -308,15 +308,18 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
                                     if(newData.length() == playerIDlength)
                                     {
                                         //TODO: ADDHERE: Search database for ID, returning codename
+                                            //IF no id found then create new entry with id = newData
+
                                             //if not found search function returns null
                                                 //Later : try and highlight codename cell to show that codename needs to be entered
-                                                    //For this may have a setError() function that changes the border of textbox to indicate an error
-                                                    //Will also need a setNotError() to undo border
+                                                    //call this.setTextFieldBorderError(i+1, true) //This will set the border of the codename field to be a color rather than not empty
+                                                    
                                             //if found      textfield[i+1].setText(found name);
                                     }; 
                                     break;
                                 case(1): //is codename
-                                    //DO stuff
+                                        //TODO: Search for id and get codename; if returnedName != newData, set the name in database to newData
+                                            //call this.setTextFieldBorderError(i, false) //will reset the border to empty if there was an error finding the name
                                     break;
                                 case(2): //is equipmentID
                                     if(newData.length() == equipIDlength)
