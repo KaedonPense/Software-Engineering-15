@@ -47,9 +47,9 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
             static Color gray = new Color(100,100,100); 
             static Color backgroundColor = gray.darker();      //main background color
         //Fonts
-            Font headingFont = new Font("impact", Font.ITALIC, 35);
-            Font columnHeadingFont = new Font("times new roman", Font.PLAIN, 15);
-            Font textFieldFont = new Font("times new roman" , Font.PLAIN, 12);
+            public static Font headingFont = new Font("impact", Font.ITALIC, 35);
+            public static Font columnHeadingFont = new Font("times new roman", Font.PLAIN, 15);
+            public static Font textFieldFont = new Font("times new roman" , Font.PLAIN, 12);
         //Arrays
             static JTextField[] textField = new JTextField[90];    //An array of JTextfields, in this instance the number i%3 gives what the cell should be. = 0 -> playerID, = 1 -> Codename, =2 -> EquipmentID
             static String[] checkData = new String[90];     //An array of the previous contents of JTextfields - updated when a cell is changed
@@ -369,9 +369,14 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
                 }
                 if(check.equals("true"))
                 {
-
                 }
-                
+                if(check.equals("false"))
+                {
+                    error = true;
+                }
+                playerIDs[player] = playerID;
+                playerNames[player] = codename;
+                equipmentIDs[player] = equipmentID;
             }
             return !error; //if error = true return false; 
         }
@@ -500,4 +505,25 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
             else
                 textField[textfield].setBorder(emptyBorder);
         }
+
+
+    void CreateTeams(Team greenTeam, Team redTeam)
+    {
+        for(int i = 0; i < 30; i=+2)
+        {
+            if(! textField[i*3].equals(""))
+            {
+                Player p = new Player(textField[i*3].getText(), textField[i*3+1].getText(), textField[i*3+2].getText(),greenTeam);
+                greenTeam.players.add(p);
+            }
+        }
+        for(int i = 1; i < 30; i=+2)
+        {
+            if(! textField[i*3].equals(""))
+            {
+                Player p = new Player(textField[i*3].getText(), textField[i*3+1].getText(), textField[i*3+2].getText(),redTeam);
+                redTeam.players.add(p);
+            }
+        }
+    }
 }

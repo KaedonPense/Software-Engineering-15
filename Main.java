@@ -38,6 +38,7 @@ public class Main extends JFrame
     public static void main(String[] args)
         {
             Main m = new Main();
+            //Game g = new Game();
             m.run();
         }
 
@@ -50,7 +51,7 @@ public class Main extends JFrame
     public Main()
         {
             //Creation of the Frame
-                this.setTitle("TableDemo");
+                this.setTitle("Proton");
                 this.setSize(1000,1000);
 	        	this.setFocusable(true);
                 this.setLayout(new FlowLayout());
@@ -69,11 +70,10 @@ public class Main extends JFrame
      */
     public void run()
         {
-        
+            Team greenTeam;
+            Team redTeam;
             while(true) //keep running
                 {
-                    //this.pack();
-                    //playerEntry.visible(this, true);
                     this.revalidate();  //this removes the now showing contents on start
                 
                     switch(ControllingScreen)
@@ -86,12 +86,15 @@ public class Main extends JFrame
                         	break;
                             case("playerEntryScreen"): //i.e Screens[1]
                                 //TODO: event handeling
-                                    //On interaction
-                                        playerEntry.Update();
+                                    playerEntry.Update();
+                                    greenTeam = new Team(playerEntry.green, playerEntry.darkGreen);
+                                    redTeam = new Team(playerEntry.red, playerEntry.darkRed);
                                     //On continue to game screen
-                                        /*  if(playerEntry.checkValidPlayersTrue)
+                                        /*  if(playerEntry.checkValidPlayers == True)
                                          *      {   
-                                         *          //TODO: somehow pass playerdata into class game
+                                         *          greenTeam = new Team(playerEntry.green, playerEntry.darkGreen);
+                                         *          redTeam = new Team(playerEntry.red, playerEntry.darkRed);
+                                         *          playerEntry.createTeams(greenTeam, redTeam);
                                          *          playerEntry.visible(this, false); //remove playerEntry panel from screen
                                          *          ControllingScreen = Screens[2]; //set controlling screen to gameScreen
                                          *      }
@@ -99,10 +102,7 @@ public class Main extends JFrame
                                 break;
                             case("gameScreen"): //i.e Screens[2]
                                 break;
-                        }
-                    //TODO: make update function event driven instead of always running
-                    
-                
+                        }                    
                     //Delay statement - thread saver
                     try
                         {Thread.sleep(40);}
