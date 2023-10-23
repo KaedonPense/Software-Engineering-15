@@ -65,6 +65,9 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
             static Border errorBorder = BorderFactory.createBevelBorder(1, Color.BLUE, Color.BLUE, backgroundColor,gray);
 				boolean moveToPlayAction = false;
         //constructors
+
+	//Database
+		Database database;
       
     
     /* 
@@ -298,7 +301,7 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
         {
             String newData; //will be the current text in a textbox
             String oldData; //will be the text that was in the cell last time this function ran
-            
+            String code = null;
 				// checks when window is the focus
 				if (f5) // switch to PlayAction
 				{
@@ -355,18 +358,22 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
                                 case(0): //is playerID
                                     if(newData.length() == playerIDlength)
                                     {
-                                        //TODO: ADDHERE: Search database for ID, returning codename
-                                            //IF no id found then create new entry with id = newData
-
-                                            //if not found search function returns null
+					code = database.ReturnCodeName(textField[i].getText());
+					    //If found set code name to found value
+					if(code != null)
+						textField[i+1].setText(code);
+					if(code == null)
+						textField[i+1].setText(code);
                                                 //Later : try and highlight codename cell to show that codename needs to be entered
                                                     //call this.setTextFieldBorderError(i+1, true) //This will set the border of the codename field to be a color rather than not empty
-                                                    
-                                            //if found      textfield[i+1].setText(found name);
                                     }; 
                                     break;
                                 case(1): //is codename
-                                        //TODO: Search for id and get codename; if returnedName != newData, set the name in database to newData
+                                        code = database.ReturnCodeName(textField[i-1].getText());
+					if(code == null && textField[i].getText() != code && textField[i-1].getText() != null)
+						database.InsertData(textField[i-1].getText(), textField[i].getText());
+					if(code != null && !(textField[i].getText().equals(code)))
+						database.UpdateData(textField[i-1].getText(), textField[i].getText());
                                             //call this.setTextFieldBorderError(i, false) //will reset the border to empty if there was an error finding the name
                                     break;
                                 case(2): //is equipmentID
@@ -521,9 +528,15 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
     void visible(JFrame frame, boolean addRemove)
         {
             if(addRemove == true)
+	    {
                 frame.setContentPane(playerEntryPanel);
+		database = new Database();
+	    }
             else
+	    {
                 frame.remove(playerEntryPanel);
+		database.CloseConnection();
+	    }
         }
     /*
      * @description: Checks what keys are pressed and sets boolean for it to true
