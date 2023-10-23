@@ -1,5 +1,5 @@
 //-----------------------------------------------------------
-//  Purpose:    Link Sockets to Rest of Program
+//  Purpose:    Receive Packets and Interact with Rest of Program
 //  Author:     Seth Howard
 //-----------------------------------------------------------
 
@@ -9,46 +9,44 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import javax.xml.crypto.Data;
+import java.util.concurrent.Semaphore;
 
 
 /*
  * Tasks for Integration:
- *  - [] Get equipment ids from PES
- * 		 - not sure if this is needed, could just send packet from PES
  *  - [] Get start condition when countdown timer ends from PAS
+ * 		 - 
  *  - [] Send tag information to PAS
  * 		 - taggerID and TagID
  *  - [] Get end condition when game time ends from PAS
  * 
  * Notes: 
  *  - Main udp file and implements udp receive
- *  - Might need to be run separate from rest of program because
- * 	it waits to receive new packet before it continues
- *  - udpBroadcast is offshoot that can be called whenever
- * 		- use udpBroadcast.sendPacket(string message);
+ *  - Implemented as thread for simultaneous running with main program
  * 
  * 
  *  - Start code = 202
  *  - End code = 221
  *  - Red Base hit = 66
- *  - Green Base hit = 148
+ *  - Green Base hit = 43
  *  - Player Entry Screen = PES
  *  - Play Action Screen = PAS
  * 
  */
 
-public class udpClient
+public class udpClient implements Runnable
 {
 	static String start = "202";
 	static String end = "221";
 	static String redBaseHit = "66";
-	static String greenBaseHit = "148";
-	
-	public static void main(String[] args) throws IOException
-	{
-		System.out.println("udpClient Running");
-		String taggerID = "", tagID = "", temp = "";
+	static String greenBaseHit = "43";
 
+	udpClient() {	}
+	
+	public void monitorPort() throws IOException
+	{
+		// System.out.println("Monitoring Port");
+		String taggerID = "", tagID = "", temp = "";
 
 		DatagramSocket receive = new DatagramSocket(7501);
 		byte[] buffer = new byte[65535];
@@ -73,7 +71,6 @@ public class udpClient
 			if (tagID != "" && tagID != redBaseHit && tagID != greenBaseHit)
 				udpBroadcast.sendPacket(tagID);
 		}
-
 	}
 
 	public static String getTaggedID(String temp)
@@ -117,5 +114,16 @@ public class udpClient
 			i++;
 		}
 		return ret;
+	}
+
+	@Override
+	public void run()
+	{
+		// System.out.println("Running Client");
+		try {
+			monitorPort();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

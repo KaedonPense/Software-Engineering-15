@@ -19,6 +19,7 @@
     import javax.swing.JFrame;
     import javax.swing.*;
     import java.awt.*;
+	 import java.lang.Runnable;
 
 public class Main extends JFrame
 {
@@ -59,7 +60,13 @@ public class Main extends JFrame
                 this.setVisible(true);
             //Creation of screens
                 playerEntry.createPlayerEntryScreenContent();
+					 this.addKeyListener(playerEntry);
                 //TODO: add creation of game screen here
+
+				//Creation of udpClient Thread
+					 udpClient client = new udpClient();
+					 Thread c = new Thread(client);
+					 c.start();
 
         }
 
@@ -89,7 +96,12 @@ public class Main extends JFrame
                                     playerEntry.Update();
                                     greenTeam = new Team(playerEntry.green, playerEntry.darkGreen);
                                     redTeam = new Team(playerEntry.red, playerEntry.darkRed);
-                                    //On continue to game screen
+                                    
+												// temporary
+												if (playerEntry.moveToPlayAction)
+													ControllingScreen = Screens[2];
+												
+												//On continue to game screen
                                         /*  if(playerEntry.checkValidPlayers == True)
                                          *      {   
                                          *          greenTeam = new Team(playerEntry.green, playerEntry.darkGreen);

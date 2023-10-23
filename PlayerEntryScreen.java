@@ -23,12 +23,14 @@
     import javax.swing.border.Border;
     import java.awt.event.ActionListener; 
     import java.awt.event.ActionEvent;
+	 import java.awt.event.KeyListener;
+	 import java.awt.event.KeyEvent;
     import java.util.Scanner;
     import java.io.IOException;
 
 
 
-public class PlayerEntryScreen extends JFrame implements ActionListener// Could name this Window to be more accurate  
+public class PlayerEntryScreen extends JFrame implements ActionListener, KeyListener// Could name this Window to be more accurate  
 {
     //Static Variables
         //Panels
@@ -53,13 +55,17 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
         //Arrays
             static JTextField[] textField = new JTextField[90];    //An array of JTextfields, in this instance the number i%3 gives what the cell should be. = 0 -> playerID, = 1 -> Codename, =2 -> EquipmentID
             static String[] checkData = new String[90];     //An array of the previous contents of JTextfields - updated when a cell is changed
+		  //Keys
+		  		boolean f5; // switch to PlayAction
+				boolean f12; // clear entries
         //Other
             static int playerIDlength = 5; //the required length of the player ID, use this to determine if cell is full -> do actions
             static int equipIDlength = 5;
             static Border emptyBorder = BorderFactory.createEmptyBorder(5,5,5,5); //A transparent border so something doesn't fill its panel. USED: to make collored player backgrounds visible, else the white textfield covers the panel. 
             static Border errorBorder = BorderFactory.createBevelBorder(1, Color.BLUE, Color.BLUE, backgroundColor,gray);
+				boolean moveToPlayAction = false;
         //constructors
-            udpBroadcast udp;
+      
     
     /* 
      * @description: JPanel "playerEntryPanel" constructor
@@ -81,7 +87,10 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
                 textFieldsPanel.setBackground(backgroundColor);        //Background color
                 scrollGrid = new GridBagConstraints();          //create gridConstraints for textFields layout  
                 scrollGrid.fill = GridBagConstraints.BOTH;
-                udp = new udpBroadcast();
+
+					 this.addKeyListener(this);
+					 this.setFocusable(true);
+					 this.requestFocusInWindow();
 
                 System.out.println("The length of valid player id's is " + playerIDlength + ".");
                 System.out.println("the length of valid equipment id's is " + equipIDlength + ".");
@@ -289,9 +298,48 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
         {
             String newData; //will be the current text in a textbox
             String oldData; //will be the text that was in the cell last time this function ran
-            for(int i = 0; i < 90; i++)
+            
+				// checks when window is the focus
+				if (f5) // switch to PlayAction
+				{
+					System.out.println("Switch Screen");
+					moveToPlayAction = true;
+					
+					f5 = false;
+				}
+
+				if (f12) // clear entry data
+				{
+					clearData();
+					System.out.println("Cleared Data");
+					f12 = false;
+				}
+				
+				for(int i = 0; i < 90; i++)
             {
-                newData = textField[i].getText().trim();  //get text from box
+               if (textField[i].hasFocus()) // adds keyListener to selected cell for key commands
+					{
+						textField[i].addKeyListener(this);
+					}
+					
+					// checks when textfield is the focus
+					if (f5) // switch to PlayAction
+					{
+						System.out.println("Switch Screen");
+						moveToPlayAction = true;
+						
+						f5 = false;
+					}
+
+					if (f12) // clear entry data
+					{
+						clearData();
+						System.out.println("Cleared Data");
+						f12 = false;
+					}
+
+
+					 newData = textField[i].getText().trim();  //get text from box
                 if(!newData.isEmpty()) // there is something in the cell   
                 {
                     oldData = checkData[i]; //previous data in cell
@@ -327,7 +375,7 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
                                         //TODO: ADDHERE: Transmit code
                                         try
                                         {
-                                            udp.sendPacket(newData);
+                                            udpBroadcast.sendPacket(newData);
                                         }
                                         catch(IOException e)
                                         {
@@ -478,6 +526,22 @@ public class PlayerEntryScreen extends JFrame implements ActionListener// Could 
                 frame.remove(playerEntryPanel);
         }
     /*
+     * @description: Checks what keys are pressed and sets boolean for it to true
+     *      @uses: 
+     * @param: KeyEvent from focused component
+     * @return: none
+     */	
+	 public void keyPressed(KeyEvent e) {} // not used
+	 public void keyTyped(KeyEvent e) {} // not used
+	 public void keyReleased(KeyEvent e)
+	 {
+		switch(e.getKeyCode())
+		{
+			case KeyEvent.VK_F5: f5 = true; break;
+			case KeyEvent.VK_F12: f12 = true; break;
+		}
+	 }
+	 /*
      * @description: Clears the text in textfields and the "previous data in cell"
      *      @uses: When "new game"
      * @param: none

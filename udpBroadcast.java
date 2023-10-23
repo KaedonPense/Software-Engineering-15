@@ -27,22 +27,6 @@ public class udpBroadcast
 
 	udpBroadcast() {}
 
-	// Not currently using these functions
-		// public void update() throws IOException
-		// {
-		// 	System.out.println("B Update");
-		// 	if (broadcastData != "")
-		// 	{
-		// 		System.out.println("Sending Packet");
-		// 		sendPacket(broadcastData);
-		// 		broadcastData = "";
-		// 	}
-		// }
-	
-		// public void startGame() throws IOException {sendPacket(start);}
-		// public void endGame() throws IOException {sendPacket(end);}
-
-
 	public static void sendPacket(String data) throws IOException
 	{
 		DatagramSocket broadcast = new DatagramSocket();
