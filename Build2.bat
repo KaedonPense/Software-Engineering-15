@@ -3,7 +3,7 @@ CLS
 
 setlocal enabledelayedexpansion
 
-Set list=Main.java PlayerEntryScreen.java StartScreen.java udpBroadcast.java udpClient.java Game.java
+Set list=Main.java PlayerEntryScreen.java StartScreen.java udpBroadcast.java udpClient.java Game.java Database.java
 Set missing=
 Set error=0
 
@@ -25,7 +25,7 @@ IF !error!==1 (
     echo [1;32mCompiling java program [0m
 )
 
-javac Main.java PlayerEntryScreen.java StartScreen.java udpBroadcast.java udpClient.java Game.java
+javac Main.java PlayerEntryScreen.java StartScreen.java udpBroadcast.java udpClient.java Game.java Database.java
 if %errorlevel% neq 0 (
 	echo [1;31mERROR COMPILEING[0m; exiting now
 ) else (
