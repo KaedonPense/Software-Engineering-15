@@ -1,6 +1,8 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+
 import java.awt.*;
-public class Player 
+public class Player
 {
     public int score;
     public String codename;
@@ -8,13 +10,12 @@ public class Player
     public String playerID;
     public boolean base;
 
-    public JPanel playerPanel;
     public JLabel baseLabel;
     public JLabel nameLabel;
     public JLabel scoreLabel;
     public Team inTeam;
 
-    public Font playerFont = inTeam.playerFont;
+    Font playerFont = inTeam.playerFont;
 
     Player(String ID, String name, String EQID, Team team)
     {
@@ -25,19 +26,19 @@ public class Player
         this.base = false;
         this.inTeam = team;
 
-        this.playerPanel = new JPanel(new GridBagLayout());
-
-        baseLabel = new JLabel(" ");
+        baseLabel = new JLabel(" ", SwingConstants.CENTER);
         baseLabel.setFont(playerFont);
-        playerPanel.add(baseLabel, inTeam.grid1);
-
-        nameLabel = new JLabel(this.codename);
+        nameLabel = new JLabel(this.codename, SwingConstants.CENTER);
         nameLabel.setFont(playerFont);
-        playerPanel.add(nameLabel, inTeam.grid2);
-        
-        scoreLabel = new JLabel(String.valueOf(this.score));
-        scoreLabel.setFont(playerFont);
-        playerPanel.add(scoreLabel, inTeam.grid3);
+        scoreLabel = new JLabel(String.valueOf(this.score), SwingConstants.CENTER);
+    }
+    Player()
+    {
+        baseLabel = new JLabel(" ", SwingConstants.CENTER);
+        baseLabel.setFont(playerFont);
+        nameLabel = new JLabel(" ", SwingConstants.CENTER);
+        nameLabel.setFont(playerFont);
+        scoreLabel = new JLabel(" ", SwingConstants.CENTER);
     }
     //public void tag()
     public void addPoints(int pointsToAdd, String Tagged)
@@ -63,5 +64,20 @@ public class Player
         {
             System.out.println("Error: The tagged player is on the same team. No points added");
         }
+    }
+    public void addToPanel(JPanel parent, GridBagConstraints g1, GridBagConstraints g2, GridBagConstraints g3, Color color)
+    {
+        JPanel panel = new JPanel();
+        panel.setBackground(color);
+        panel.add(baseLabel);
+        parent.add(panel,g1);
+        panel = new JPanel();
+        panel.setBackground(color);
+        panel.add(nameLabel);
+        parent.add(panel,g2);
+        panel = new JPanel();
+        panel.setBackground(color);
+        panel.add(scoreLabel);
+        parent.add(panel, g3);
     }
 }

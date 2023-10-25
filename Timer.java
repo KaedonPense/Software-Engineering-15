@@ -1,4 +1,5 @@
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 public class Timer extends Thread
 {
@@ -7,6 +8,7 @@ public class Timer extends Thread
     public JLabel timerText = new JLabel();
     Timer(int time)
     {
+        timerText.setHorizontalAlignment(SwingConstants.CENTER);
         sec = time%60;
         min = (time - sec)/60;
         //timerText.setFont()
@@ -31,14 +33,14 @@ public class Timer extends Thread
             timerText.setText(min + ":" + sec);
             try
             {
-                Tread.sleep(999); //should sleep for slightly less than 1 second to allow for runtime of code
+                Thread.sleep(999); //should sleep for slightly less than 1 second to allow for runtime of code
             }
             catch(InterruptedException e)
             {
                 System.out.println("Timer can't sleep");
             }
         }
-        Game.timerSem.release();
+            PlayerActionScreen.timerSem.release();
     }
 }
 

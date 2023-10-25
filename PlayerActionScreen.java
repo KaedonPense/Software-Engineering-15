@@ -1,3 +1,6 @@
+// import javax.swing.JFrame;
+// import javax.swing.JLabel;
+// import javax.swing.JPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.util.concurrent.Semaphore;
@@ -13,7 +16,6 @@ public class PlayerActionScreen extends JFrame {
     public static Semaphore timerSem = new Semaphore(1, true);
     Timer timer;
     GridBagConstraints timerGrid;
-    
     //Colors
     static Color red = new Color(200,0,0);      //main red team color
     static Color green = new Color(0,200,0);    //main green team color
@@ -21,13 +23,11 @@ public class PlayerActionScreen extends JFrame {
     static Color darkGreen = green.darker();    //alt green
     static Color gray = new Color(100,100,100); 
     static Color backgroundColor = gray.darker();      //main background color
-
     //Fonts
     Font headingFont = new Font("impact", Font.ITALIC, 35);
     Font columnHeadingFont = new Font("times new roman", Font.PLAIN, 15);
     Font textFieldFont = new Font("times new roman" , Font.PLAIN, 12);
     boolean warning30remaining = false;
-
     // Constructor
     PlayerActionScreen(JFrame frame) 
     {
@@ -43,8 +43,8 @@ public class PlayerActionScreen extends JFrame {
     // Sets teams
     void setTeams(Team gt, Team rt) 
     {
-        greenTeam = setDemoTeam(green, darkGreen);
-        redTeam = setDemoTeam(red, darkRed); 
+        greenTeam = gt;
+        redTeam = rt;
     }
 
     // TEMPORARY: adds some dummy players for testing purposes
@@ -72,14 +72,18 @@ public class PlayerActionScreen extends JFrame {
 
     void setTeamPanels() 
     {
+        //System.out.println("Created tables");
         greenTeam.createTableFromArray();
         redTeam.createTableFromArray();
+        //greenTeam.updateTable();
+        //redTeam.updateTable();
     }
 
     void addPanelsToFrame() 
     {
+        this.setTeamPanels();
+        //System.out.println("Added tables");
         cons = new GridBagConstraints();
-        // Sets values for countdownPanel
         cons.fill = GridBagConstraints.BOTH;
         cons.gridy = 1;
         greenTeam.addToPanel(gamePanel, cons);
@@ -108,7 +112,6 @@ public class PlayerActionScreen extends JFrame {
             System.out.println("Cannot create new timer");
         }
     }
-
     void update() {
         if((timer.getTime() <= 30) && (!warning30remaining))
         {
@@ -125,11 +128,18 @@ public class PlayerActionScreen extends JFrame {
         System.out.println("Game Over");
         System.exit(0);
     }
+
     void visible(JFrame frame, boolean addRemove)
     {
         if(addRemove == true)
+        {
             frame.setContentPane(gamePanel);
+            //System.out.println("Added game screen to frame");
+        }
         else
+        {
             frame.remove(gamePanel);
+            //System.out.println("Removed game screen from frame");
+        }
     }
 }

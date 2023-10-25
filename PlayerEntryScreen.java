@@ -94,10 +94,12 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
 					 this.addKeyListener(this);
 					 this.setFocusable(true);
 					 this.requestFocusInWindow();
-
+                System.out.println("");
+                System.out.println("");
+                System.out.println("IMPORTANT");
                 System.out.println("The length of valid player id's is " + playerIDlength + ".");
                 System.out.println("the length of valid equipment id's is " + equipIDlength + ".");
-                System.out.println("Found on lines 57 and 58");
+                System.out.println("Found on lines 62 and 63");
                 
             
         }
@@ -166,7 +168,6 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
                                     {
                                         JTextField textbox = this.addTextField(null, 1, scrollGrid); // scroll grid irrelivant as layout is not gridBag
                                         textbox.setFont(textFieldFont);
-        //System.out.println(playerNumber*3+field);
                                         textField[playerNumber*3+field] = textbox;  //set the relevant array number to this
                                         checkData[playerNumber] = null;     //initilize checkdata for the cell. i.e "last checked contents of cell"
                                         player.add(textbox); //add each textfield to the player panel
@@ -358,28 +359,23 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
                                 case(0): //is playerID
                                     if(newData.length() == playerIDlength)
                                     {
-					code = database.ReturnCodeName(textField[i].getText());
-					    //If found set code name to found value
-					if(code != null)
-						textField[i+1].setText(code);
-					if(code == null)
-						textField[i+1].setText(code);
-                                                //Later : try and highlight codename cell to show that codename needs to be entered
-                                                    //call this.setTextFieldBorderError(i+1, true) //This will set the border of the codename field to be a color rather than not empty
+                                        code = database.ReturnCodeName(textField[i].getText());
+                                        if(code != null)
+                                            textField[i+1].setText(code);
+                                        if(code == null)
+                                            textField[i+1].setText(code);
                                     }; 
                                     break;
                                 case(1): //is codename
                                         code = database.ReturnCodeName(textField[i-1].getText());
-					if(code == null && textField[i].getText() != code && textField[i-1].getText() != null)
-						database.InsertData(textField[i-1].getText(), textField[i].getText());
-					if(code != null && !(textField[i].getText().equals(code)))
-						database.UpdateData(textField[i-1].getText(), textField[i].getText());
-                                            //call this.setTextFieldBorderError(i, false) //will reset the border to empty if there was an error finding the name
+                                        if(code == null && textField[i].getText() != code && textField[i-1].getText() != null)
+                                            database.InsertData(textField[i-1].getText(), textField[i].getText());
+                                        if(code != null && !(textField[i].getText().equals(code)))
+                                            database.UpdateData(textField[i-1].getText(), textField[i].getText());
                                     break;
                                 case(2): //is equipmentID
                                     if(newData.length() == equipIDlength)
                                     {
-                                        //TODO: ADDHERE: Transmit code
                                         try
                                         {
                                             udpBroadcast.sendPacket(newData);
@@ -433,6 +429,8 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
                 playerNames[player] = codename;
                 equipmentIDs[player] = equipmentID;
             }
+            if(error)
+                System.out.println("ERROR Invalid Players");
             return !error; //if error = true return false; 
         }
     /* 
@@ -527,16 +525,18 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
      */
     void visible(JFrame frame, boolean addRemove)
         {
-            if(addRemove == true)
-	    {
-                frame.setContentPane(playerEntryPanel);
-		database = new Database();
-	    }
-            else
-	    {
-                frame.remove(playerEntryPanel);
-		database.CloseConnection();
-	    }
+                if(addRemove == true)
+            {
+                    frame.setContentPane(playerEntryPanel);
+                    database = new Database();
+                    //System.out.println("Added Player Entry to frame");
+            }
+                else
+            {
+                    frame.remove(playerEntryPanel);
+                    database.CloseConnection();
+                    //System.out.println("Removed Player Entry from frame");
+            }
         }
     /*
      * @description: Checks what keys are pressed and sets boolean for it to true
@@ -586,17 +586,27 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
 
     void CreateTeams(Team greenTeam, Team redTeam)
     {
-        for(int i = 0; i < 30; i=+2)
+        for(int i = 0; i < 30; i=i+2)
         {
-            if(! textField[i*3].equals(""))
+            if(textField[i*3].getText().equals(""))
+            {
+                Player p = new Player();
+                greenTeam.players.add(p);
+            }
+            else
             {
                 Player p = new Player(textField[i*3].getText(), textField[i*3+1].getText(), textField[i*3+2].getText(),greenTeam);
                 greenTeam.players.add(p);
             }
         }
-        for(int i = 1; i < 30; i=+2)
+        for(int i = 1; i < 30; i=i+2)
         {
-            if(! textField[i*3].equals(""))
+            if(textField[i*3].getText().equals(""))
+            {
+                Player p = new Player();
+                redTeam.players.add(p);
+            }
+            else
             {
                 Player p = new Player(textField[i*3].getText(), textField[i*3+1].getText(), textField[i*3+2].getText(),redTeam);
                 redTeam.players.add(p);
