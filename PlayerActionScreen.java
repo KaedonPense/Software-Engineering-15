@@ -28,6 +28,7 @@ public class PlayerActionScreen extends JFrame {
     Font columnHeadingFont = new Font("times new roman", Font.PLAIN, 15);
     Font textFieldFont = new Font("times new roman" , Font.PLAIN, 12);
     boolean warning30remaining = false;
+    String game;
     // Constructor
     PlayerActionScreen(JFrame frame) 
     {
@@ -38,6 +39,7 @@ public class PlayerActionScreen extends JFrame {
         timerGrid = new GridBagConstraints();
         timerGrid.fill = GridBagConstraints.BOTH;
         timerGrid.gridwidth = 2;
+        game = "Starting";
     }
 
     // Sets teams
@@ -97,34 +99,36 @@ public class PlayerActionScreen extends JFrame {
     { 
         gamePanel.setBackground(backgroundColor);
         addPanelsToFrame();
-        try
-        {
-            timerSem.acquire();
-            timer = new Timer(35);
-            timer.timerText.setFont(headingFont.deriveFont(Font.PLAIN, 70f));
-            timer.timerText.setForeground(Color.WHITE);
-            gamePanel.add(timer.timerText,timerGrid);
-            timer.start();
-            
-        }
-        catch(InterruptedException e)
-        {
-            System.out.println("Cannot create new timer");
-        }
+        makeTimer(35);
     }
     void update() {
-        if((timer.getTime() <= 30) && (!warning30remaining))
+        switch(game)
         {
-            System.out.println("30 seconds until game start");
-            warning30remaining = true;
-        }
-        if (timer.getTime() <=0) 
-        {
-            gameOver();
+            //game is going
+            case("Running"): 
+                if(timer.getTime() <= 0)
+                {
+                    gameOver();
+                }
+                break;
+            
+            //game has not yet started
+            case("Starting"): 
+                if((timer.getTime() <= 30) && (!warning30remaining))
+                {
+                    System.out.println("30 seconds until game start");
+                    warning30remaining = true;
+                }
+                if(timer.getTime() <= 0)
+                {
+                    startGame();
+                }
+                break;
         }
     }
 
     void gameOver() {
+        timerSem.release();
         System.out.println("Game Over");
         System.exit(0);
     }
@@ -141,5 +145,31 @@ public class PlayerActionScreen extends JFrame {
             frame.remove(gamePanel);
             //System.out.println("Removed game screen from frame");
         }
+    }
+
+    void startGame()
+    {
+        game = "Running";
+        timer.setTime(60*6);
+        //add start music here
+        //add creation of message log here
+    }
+    
+    void makeTimer(int t)
+    {
+        try
+        {
+            timerSem.acquire();
+            timer = new Timer(t);
+            timer.timerText.setFont(headingFont.deriveFont(Font.PLAIN, 70f));
+            timer.timerText.setForeground(Color.WHITE);
+            gamePanel.add(timer.timerText,timerGrid);
+            timer.start();
+        }
+        catch(InterruptedException e)
+        {
+            System.out.println("Cannot create new timer");
+        }
+
     }
 }

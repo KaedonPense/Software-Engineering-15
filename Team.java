@@ -111,4 +111,24 @@ public class Team extends JFrame
         gridC2.gridy = y;
         gridC3.gridy = y;
     }
+    public void sortTable()
+    {
+        Player next;
+        int row = -1;
+        ArrayList<Player> tempPlayers = players;
+        while(tempPlayers.size() > 0)
+        {
+            next = tempPlayers.get(0);
+            for(int i = 0; i < tempPlayers.size(); i++)
+            {
+                if(tempPlayers.get(i).score > next.score)
+                {
+                    next = tempPlayers.get(i);
+                }
+            }
+            row=+1;
+            this.setGridRow(row);
+            next.addToPanel(teamPanel, gridC1, gridC2, gridC3, colorsArray[row%2]);
+        }
+    }
 }

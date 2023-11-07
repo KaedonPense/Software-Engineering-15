@@ -70,12 +70,7 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
 		Database database;
       
     
-    /* 
-     * @description: JPanel "playerEntryPanel" constructor
-     *      @use:   creates main JPanel and its main contents panels
-     * @param {frame} the frame to add the panel to;
-     * @return: none
-     */
+    /* @description: Constructor */
     PlayerEntryScreen(JFrame frame)
         {   
             //Main panel
@@ -94,6 +89,7 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
 					 this.addKeyListener(this);
 					 this.setFocusable(true);
 					 this.requestFocusInWindow();
+            //TODO: Find the correct length of player ID and eq id, set the variables and remove all bellow println's
                 System.out.println("");
                 System.out.println("");
                 System.out.println("IMPORTANT");
@@ -104,12 +100,7 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
             
         }
 
-    /* 
-     * @description: Creates contents of JPanel Player Entry Screen
-     *      @use:   The panels are created elsewhere this just creates and adds contents
-     * @param: none
-     * @return: none
-     */
+    /* @description: Creates contents of JPanel Player Entry Screen */
     void createPlayerEntryScreenContent()
         {
             int columnShift = 1; //Shift columns right n cells. USE: if we want to have a column on the left for player numbers. In doing so we need to make sure the Team headings are still aligned properly
@@ -188,25 +179,14 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
             playerEntryPanel.add(scroll, mainGrid); //add the scroll to the playerEntryPanel, using mainGrid constraints
 
         }
-    /* 
-     * @description: sets the minimum x and y size
-     *      @use: Something needs to be at least a certain size
-     * @param {padx} int: the minimum horizontal size to set to
-     * @param {pady} int: the minimum vertical size to set to 
-     * @param {grid} GridBagConstraints: the constrainst/instructions for how to add to the gridLayout
+    /*  @description: sets gridpadding of inputed grid - reduces number of lines of code from 2 to 1;
      */
     void gridPadding(int padx, int pady, GridBagConstraints grid)
         {
         grid.ipadx = padx; //sets the gridConstraints minimum horizontal size
         grid.ipady = pady; //sets the gridConstraints minimum vertical size
         }
-    /* 
-     * @description: how to fill the cell
-     *      @use: changing how something fills the cell;
-     * @param {horizontal} bool: wether or not to fill horizontally
-     * @param {vertical} bool: wether or not to fill vertically
-     * @param {grid} GridBagConstraints: the constrainst/instructions for how to add to the gridLayout
-     */
+    /* @description: how the inputed grid should fill the cell */
     void gridFill(boolean horizontal, boolean vertical, GridBagConstraints grid)
         {
             if(horizontal)  //horizontal fill
@@ -218,56 +198,28 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
             if(!horizontal && !vertical)   //dont fill any direction
                 grid.fill = GridBagConstraints.NONE;
         }
-    /* 
-     * @description: what cell to add to
-     *      @use: changes the cell to add to when JPanel.add(what, grid) is called
-     * @param {column} int: the column to add to
-     * @param {row} int: the row to add to
-     * @param {grid} GridBagConstraints: the constrainst/instructions for how to add to the gridLayout
-     */
+    /* @description: Changes the cell to add to of the inputed grid */
     void gridCell(int column, int row, GridBagConstraints grid)
         {
             grid.gridx = column;    //set the gridConstraints of what cell to add to 
             grid.gridy = row;
         }
-    /* 
-     * @description: Create noneditable string on screen //NOTE: See other JLabel constructor bellow for a more detailed creator
-     *      @use: Creates a Jlabel(string) and adds it to layout (c,r)
-     * @param {text} string: text that is to be displayed on screen
-     * @param {c} integer: the column to add the JLabel to
-     * @param {r} integer: the row to add the JLabel to
-     * @param {grid} GridBagConstraints: the constrainst/instructions for how to add to the gridLayout
-     * @param {panel} JPanel: the panel to add the label to
-     */
+    /* @description: Create noneditable string on screen //NOTE: See other JLabel constructor bellow for a more detailed creator*/
     JLabel addJLabel(String text, int c, int r, GridBagConstraints grid, JPanel panel)
         {
             JLabel label = new JLabel(text);    //create a new string Label
             //set the cell it should be in, collum c, row r
-                grid.gridx = c;                    
-                grid.gridy = r;
+                gridCell(c,r, grid);
             label.setHorizontalAlignment(SwingConstants.CENTER);    //Center the text in its cell
             panel.add(label, grid);   //add to playerEntryPanel panel
             return label;   //return statement in case need to use this label outside of this function
         }
-    /* 
-     * description: Detailed create noneditable text on screen //NOTE:if padding, font, and color are to be null use simple creator above
-     *      @use: Creates a Jlabel(string) and adds it to layout (c,r), fills the cell, sets font and color
-     * @param {text} string: text that is to be displayed on screen
-     * @param {c} int: the column to add the JLabel to
-     * @param {r} int: the row to add the JLabel to
-     * @param {font} Font: the font to use : null if using default
-     * @param {foreground} Color: the color of the text : null if using default
-     * @param {background} Color: the color of the background, (highlight?) : null if using defalult
-     * @param {grid} GridBagConstraints: the constrainst/instructions for how to add to the gridLayout
-     * @param {panel} JPanel: the panel to add the Label to
-     * @return {JLabel} the label created in this //NOTE: as of 9/26/23 the return isn't used for anything 
-     */
+    /* @description: Detailed create noneditable text on screen //NOTE:if padding, font, and color are to be null use simple creator above */
     JLabel addJLabel(String text, int c, int r, Font font, Color foreground, Color background, GridBagConstraints grid, JPanel panel)
         {
             JLabel label = new JLabel(text);
             //set the cell it should be in, collum c, row r
-                grid.gridx = c;
-                grid.gridy = r;
+                gridCell(c,r, grid);
             label.setHorizontalAlignment(SwingConstants.CENTER);
             //Added Details
                 if(font != null)    //set font 
@@ -279,25 +231,13 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
             panel.add(label, grid);   
             return label;
         }
-    /* 
-     * @description: create textbox function
-     *      @use: creates a textbox with contents (text) with n columns in a cell and sets fill
-     * @param {test} string: the text to be entered into the textbox //NOTE: If to be blank then equals null;
-     * @param {columns} int: how many columns should the textbox have //NOTE: Default should be 1
-     * @param {grid} GridBagConstraints: the constrainst/instructions for how to add to the gridLayout
-     * @return returns the created textfield //NOTE: this is used to initilize array textfields
-     */
+    /* @description: create textbox function */
     JTextField addTextField(String text, int columns, GridBagConstraints grid)
         {
             JTextField textbox = new JTextField(text, columns); //create new textbox
             return textbox;
         }
-    /* 
-     * @description: Runs To see what cells have changed
-     *      @use: when a cell has changed make sure everything is in parameters and handle conditinals
-     * @param: none
-     * @return: none //NOTE: may make this return true/false if something changed
-     */
+    /* @description: Runs To see what cells have changed */
     void Update() 
         {
             String newData; //will be the current text in a textbox
@@ -307,8 +247,14 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
 				if (f5) // switch to PlayAction
 				{
 					System.out.println("Switch Screen");
-					moveToPlayAction = true;
-					
+                    if(this.CheckValidPlayers())
+                    {
+					    moveToPlayAction = true;
+                    }
+                    else
+                    {
+                        moveToPlayAction = false;
+                    }
 					f5 = false;
 				}
 
@@ -404,19 +350,18 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
             String codename;
             String equipmentID;
 
-            String[] playerIDs = new String[30];
-            String[] playerNames = new String[30];
-            String[] equipmentIDs = new String[30];
+            //String[] playerIDs = new String[30];
+            //String[] playerNames = new String[30];
+            //String[] equipmentIDs = new String[30];
             for(int player = 0; player < 30; player++)
             {
                 playerID = textField[player*3].getText();
                 codename = textField[player*3+1].getText();
                 equipmentID = textField[player*3+2].getText();
                 //check empty
-                String check = this.checkPlayer(playerIDs, playerNames, equipmentIDs, playerID, codename, equipmentID, player);
+                String check = this.checkPlayer(playerID, codename, equipmentID, player);
                 if(check.equals("empty"))
                 {
-                    //player is empty thus valid
                 }
                 if(check.equals("true"))
                 {
@@ -425,12 +370,12 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
                 {
                     error = true;
                 }
-                playerIDs[player] = playerID;
-                playerNames[player] = codename;
-                equipmentIDs[player] = equipmentID;
+                //playerIDs[player] = playerID;
+                //playerNames[player] = codename;
+                //equipmentIDs[player] = equipmentID;
             }
             if(error)
-                System.out.println("ERROR Invalid Players");
+                System.out.println("ERROR Invalid Player(s) cannot continue");
             return !error; //if error = true return false; 
         }
     /* 
@@ -454,64 +399,121 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
      * @param {name} string: the codename to look for
      * @param {eqID} string: the equipment ID to look for
      */
-    String checkPlayer(String[] pIDs, String[] names, String[] eqIDs, String id, String name, String eqID, int playerNumber)
+    String checkPlayer(String id, String name, String eqID, int playerNumber)
         {
             String valid = "true"; //by defalult set to return the player is valid
+
             
-            if((id == null)&&(name == null)&&(eqID == null)) //check Empty
+            if((id.length() == 0)&&(name.length() == 0)&&(eqID.length() == 0)) //check Empty
                 return "empty"; //i.e. the textfield are valid
             else //ie something about the player exists
                 {   
+                    String playerError = "---Error initilizing what player has an error---";
+                    String message;
+                    String message2;
+                    switch(playerNumber%2)
+                        {
+                            case(0): playerError = "Green player " + (playerNumber/2+1) + " : "; break;
+                            case(1): playerError = "Red player" + ((playerNumber-1)/2 +1)+ " : "; break;
+                        }
                 //Checking individual null
-                    if(id == null)
+                    if(id.length() == 0)
                         {
+                            message = " player ID is empty but player is not.";
+                            message2 = " player ID should be of lenght ";
+                            System.out.println(playerError + message + message2 + playerIDlength);
                             valid = "false";
-                            this.setTextFieldBorderError(playerNumber*3, true); //player is invalid because of this thus highlight the textbox
+                            this.setTextFieldError(playerNumber*3, true); //player is invalid because of this thus highlight the textbox
                         }
-                    if(name == null)
+                    if(id.length() != playerIDlength)
                         {
+                            message = " length of playerID is ";
+                            message2 = " needs to be length ";
+                            System.out.println(playerError + message + id.length() + message2 + playerIDlength);
                             valid = "false";
-                            this.setTextFieldBorderError(playerNumber*3 + 1, true);//player is invalid because of this thus highlight the textbox
+                            this.setTextFieldError(playerNumber*3, true); //player is invalid because of this thus highlight the textbox
                         }
-                    if(eqID == null)
-                        {
+                    if(name.length() == 0)
+                        {   
+                            message = " codename is empty";
+                            System.out.println(playerError + message);
                             valid = "false";
-                            this.setTextFieldBorderError(playerNumber*3+2, true);//player is invalid because of this thus highlight the textbox
+                            this.setTextFieldError(playerNumber*3 + 1, true);//player is invalid because of this thus highlight the textbox
+                        }
+                    if(eqID.length() == 0)
+                        {
+                            message = " equipment ID is empty but player is not.";
+                            message2 = " equipment ID should be of lenght ";
+                            System.out.println(playerError + message + message2 + equipIDlength);
+                            valid = "false";
+                            this.setTextFieldError(playerNumber*3+2, true); //player is invalid because of this thus highlight the textbox
+                        }
+                    if(eqID.length() != equipIDlength)
+                        {
+                            message = " length of equipmentID is ";
+                            message2 = " needs to be length ";
+                            System.out.println(playerError + message + eqID.length() + message2 + equipIDlength);
+                            valid = "false";
+                            this.setTextFieldError(playerNumber*3+2, true); //player is invalid because of this thus highlight the textbox
                         }
                 //Check against array and check length
-                    for(int i = 0; pIDs[i+1] != null; i++)
+                    for(int i = 0; i < 30; i++)
                         {
-                        //playerID
-                            if(id.length() == playerIDlength)
-                                {
-                                    if(pIDs[i].equals(id)) //runs 
+                            String player2 = "error setting player 2";
+                            String id2 = textField[i*3].getText();
+                            String name2 = textField[i*3 + 1].getText();
+                            String eqID2 = textField[i*3 + 2].getText();
+                            switch(i%2)
+                            {
+                                case(0): player2 = "Green player " + (i/2 + 1); break;
+                                case(1): player2 = "Red player " + ((i-1)/2 + 1); break;
+                            }
+                        if(playerNumber != i)
+                        {
+                            //playerID                
+                                if(id.length() == playerIDlength)
+                                    {
+                                        if(id.equals(id2)) //runs 
+                                        {
+                                            valid = "false";
+                                            message = " id is the same as ";
+                                            System.out.println(playerError + message + player2);
+                                            this.setTextFieldError(playerNumber*3, true); //player is invalid because of this thus highlight the textbox
+                                            this.setTextFieldError(i*3, true);
+                                        }
+                                    }
+                            //codename
+                            if(name.length() != 0)
+                            {
+                                if(name.equals(name2))
                                     {
                                         valid = "false";
-                                        this.setTextFieldBorderError(playerNumber*3, true); //player is invalid because of this thus highlight the textbox
+                                        message = " codename is the same as ";
+                                        System.out.println(playerError + message + player2);
+                                        this.setTextFieldError(playerNumber*3+1, true); //player is invalid because of this thus highlight the textbox
+                                        this.setTextFieldError(i*3 + 1, true);
                                     }
                                 }
-                        //codename
-                            if(names[i].equals(name))   
-                                {
-                                    valid = "false";
-                                    this.setTextFieldBorderError(playerNumber*3+1, true); //player is invalid because of this thus highlight the textbox
-                                }
-                        //EquipmentID
-                            if(eqID.length() == equipIDlength)
-                                {
-                                    if(eqIDs[i].equals(eqID))
+                            //EquipmentID
+                                if(eqID.length() == equipIDlength)
                                     {
-                                        valid = "false";
-                                        this.setTextFieldBorderError(playerNumber*3+2, true);
+                                        if(eqID.equals(eqID2))
+                                        {
+                                            valid = "false";
+                                            message = " equipment ID is the same as ";
+                                            System.out.println(playerError + message + player2);
+                                            this.setTextFieldError(playerNumber*3+2, true);
+                                            this.setTextFieldError(i*3+2, true);
+                                        }
                                     }
-                                }
+                            }
                         }
                     if(valid.equals("true"))
                         {
                             //make sure that the textborders are the default
-                            this.setTextFieldBorderError(playerNumber*3,false);
-                            this.setTextFieldBorderError(playerNumber*3+1,false);
-                            this.setTextFieldBorderError(playerNumber*3+2,false);
+                            this.setTextFieldError(playerNumber*3,false);
+                            this.setTextFieldError(playerNumber*3+1,false);
+                            this.setTextFieldError(playerNumber*3+2,false);
                         }
                     return valid;
                     }
@@ -575,12 +577,18 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
      * @param: {error} bool: what to set the border to, true: there is an error thus highlight it, false: set it to the default border(emptyBorder)
      * @return: none
      */
-    void setTextFieldBorderError(int textfield, boolean error)
+    void setTextFieldError(int textfield, boolean error)
         {
             if(error) // if there is something wrong
-                textField[textfield].setBorder(errorBorder);
+            {
+                textField[textfield].setBackground(gray);
+                textField[textfield].setForeground(Color.WHITE);
+            }
             else
-                textField[textfield].setBorder(emptyBorder);
+            {
+                textField[textfield].setBackground(Color.WHITE);
+                textField[textfield].setForeground(Color.BLACK);
+            }
         }
 
 
