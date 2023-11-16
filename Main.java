@@ -19,7 +19,7 @@
     import javax.swing.JFrame;
     import javax.swing.*;
     import java.awt.*;
-	import java.lang.Runnable;
+
 
 public class Main extends JFrame
 {
@@ -30,10 +30,8 @@ public class Main extends JFrame
                                             
         StartScreen startScreen = new StartScreen(this);
         PlayerEntryScreen playerEntry= new PlayerEntryScreen(this);     //Initilises the Player Entry Panel class. Contains the creation and controller for the class. "this" is refering to the JFrame "window" 
-        PlayerActionScreen gameScreen = new PlayerActionScreen(this);
-        //static Team greenTeam;
-        //static Team redTeam;
-
+        Team greenTeam;
+        Team redTeam;
     /* @description: The main function to be called when the application is to be ran
      *     @use : Initilizes Main, and starts the function to keep running
      * @param: none
@@ -42,6 +40,7 @@ public class Main extends JFrame
     public static void main(String[] args)
         {
             Main m = new Main();
+            //Game g = new Game();
             m.run();
         }
 
@@ -62,13 +61,7 @@ public class Main extends JFrame
                 this.setVisible(true);
             //Creation of screens
                 playerEntry.createPlayerEntryScreenContent();
-					 this.addKeyListener(playerEntry);
-                
-
-				//Creation of udpClient Thread
-					 udpClient client = new udpClient();
-					 Thread c = new Thread(client);
-					 c.start();
+                //TODO: add creation of game screen here
 
         }
 
@@ -79,8 +72,7 @@ public class Main extends JFrame
      */
     public void run()
         {
-            Team greenTeam;
-            Team redTeam;
+            
             while(true) //keep running
                 {
                     this.revalidate();  //this removes the now showing contents on start
@@ -93,27 +85,11 @@ public class Main extends JFrame
                                 playerEntry.visible(this, true); //set the entry screen to be visible
                                 this.pack();
                         	break;
-
                             case("playerEntryScreen"): //i.e Screens[1]
+                                //TODO: event handeling
                                     playerEntry.Update();
-                                    greenTeam = new Team(playerEntry.green, playerEntry.darkGreen);
-                                    redTeam = new Team(playerEntry.red, playerEntry.darkRed);
                                     
-												// temporary
-												if (playerEntry.moveToPlayAction)
-                                                {
-                                                    //System.out.println("Changing screens");
-                                                    ControllingScreen = Screens[2];
-                                                    playerEntry.visible(this,false);
-                                                    playerEntry.CreateTeams(greenTeam,redTeam);
-                                                    gameScreen.visible(this,true);
-                                                    gameScreen.setTeams(greenTeam, redTeam);
-                                                    gameScreen.start();
-                                                    this.pack();
-                                                }
-													
-												
-												//On continue to game screen
+                                    //On continue to game screen
                                         /*  if(playerEntry.checkValidPlayers == True)
                                          *      {   
                                          *          greenTeam = new Team(playerEntry.green, playerEntry.darkGreen);
@@ -125,7 +101,6 @@ public class Main extends JFrame
                                          */
                                 break;
                             case("gameScreen"): //i.e Screens[2]
-                                gameScreen.update();
                                 break;
                         }                    
                     //Delay statement - thread saver
@@ -138,4 +113,5 @@ public class Main extends JFrame
                     }
                 }
         }
+
 }
