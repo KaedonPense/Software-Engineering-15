@@ -19,7 +19,7 @@
     import javax.swing.JFrame;
     import javax.swing.*;
     import java.awt.*;
-
+	import java.lang.Runnable;
 
 public class Main extends JFrame
 {
@@ -30,17 +30,18 @@ public class Main extends JFrame
                                             
         StartScreen startScreen = new StartScreen(this);
         PlayerEntryScreen playerEntry= new PlayerEntryScreen(this);     //Initilises the Player Entry Panel class. Contains the creation and controller for the class. "this" is refering to the JFrame "window" 
-        Team greenTeam;
-        Team redTeam;
+        PlayerActionScreen gameScreen = new PlayerActionScreen(this);
+        public static boolean debug = true;
+
     /* @description: The main function to be called when the application is to be ran
      *     @use : Initilizes Main, and starts the function to keep running
      * @param: none
-     * @returns: none
+     * @returns: none-
+     * 
      */
     public static void main(String[] args)
         {
             Main m = new Main();
-            //Game g = new Game();
             m.run();
         }
 
@@ -61,10 +62,15 @@ public class Main extends JFrame
                 this.setVisible(true);
             //Creation of screens
                 playerEntry.createPlayerEntryScreenContent();
-                //TODO: add creation of game screen here
+					 this.addKeyListener(playerEntry);
+                
+
+				//Creation of udpClient Thread
+					 udpClient client = new udpClient();
+					 Thread c = new Thread(client);
+					 c.start();
 
         }
-
     /* @discription: Keep running Function
      *      @use:  While the call to close JFrame "window" is false keep program running
      * @param: none
@@ -72,7 +78,8 @@ public class Main extends JFrame
      */
     public void run()
         {
-            
+            Team greenTeam;
+            Team redTeam;
             while(true) //keep running
                 {
                     this.revalidate();  //this removes the now showing contents on start
@@ -80,27 +87,39 @@ public class Main extends JFrame
                     switch(ControllingScreen)
                         {
                             case("startScreen"): //i.e Screens[0]
-                                startScreen.run();
+                                if(debug)
+                                {}
+                                else
+                                {
+                                    startScreen.run();
+                                }
                                 ControllingScreen = Screens[1]; //Change the screen to display to the player entry Screen
                                 playerEntry.visible(this, true); //set the entry screen to be visible
                                 this.pack();
                         	break;
+
                             case("playerEntryScreen"): //i.e Screens[1]
-                                //TODO: event handeling
+                                   
+                                    if(debug)
+                                    {
+                                        playerEntry.addDebugPlayers();
+                                    }
                                     playerEntry.Update();
-                                    
-                                    //On continue to game screen
-                                        /*  if(playerEntry.checkValidPlayers == True)
-                                         *      {   
-                                         *          greenTeam = new Team(playerEntry.green, playerEntry.darkGreen);
-                                         *          redTeam = new Team(playerEntry.red, playerEntry.darkRed);
-                                         *          playerEntry.createTeams(greenTeam, redTeam);
-                                         *          playerEntry.visible(this, false); //remove playerEntry panel from screen
-                                         *          ControllingScreen = Screens[2]; //set controlling screen to gameScreen
-                                         *      }
-                                         */
+									if (playerEntry.moveToPlayAction)
+                                    {
+                                        greenTeam = new Team(playerEntry.green, playerEntry.darkGreen);
+                                        redTeam = new Team(playerEntry.red, playerEntry.darkRed);
+                                        ControllingScreen = Screens[2];
+                                        playerEntry.visible(this,false);
+                                        playerEntry.CreateTeams(greenTeam,redTeam);
+                                        gameScreen.visible(this,true);
+                                        gameScreen.setTeams(greenTeam, redTeam);
+                                        gameScreen.start();
+                                        this.pack();
+                                    }
                                 break;
                             case("gameScreen"): //i.e Screens[2]
+                                gameScreen.update();
                                 break;
                         }                    
                     //Delay statement - thread saver
@@ -113,5 +132,4 @@ public class Main extends JFrame
                     }
                 }
         }
-
 }
