@@ -3,7 +3,7 @@ CLS
 
 setlocal enabledelayedexpansion
 
-Set list=Main.java PlayerActionScreen.java PlayerEntryScreen.java StartScreen.java udpBroadcast.java udpClient.java Database.java
+Set list=Main.java PlayerActionScreen.java PlayerEntryScreen.java StartScreen.java udpBroadcast.java udpClient.java Database.java Timer.java
 Set missing=
 Set error=0
 
