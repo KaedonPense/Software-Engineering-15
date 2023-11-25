@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import javax.xml.crypto.Data;
 import java.util.concurrent.Semaphore;
@@ -40,15 +42,24 @@ public class udpClient implements Runnable
 	static String end = "221";
 	static String redBaseHit = "66";
 	static String greenBaseHit = "43";
+	String testTemp = "";
+	// String toPAS[] = new String[2];
 
 	udpClient() {	}
 	
 	public void monitorPort() throws IOException
 	{
-		// System.out.println("Monitoring Port");
+		System.out.println("Monitoring Port");
 		String taggerID = "", tagID = "", temp = "";
 
-		DatagramSocket receive = new DatagramSocket(7501);
+		DatagramSocket receive = new DatagramSocket(null);
+		SocketAddress clientAddress = new InetSocketAddress(InetAddress.getLocalHost(), 7500);
+		receive.bind(clientAddress);
+
+		// System.out.println("client socket address: " + clientAddress.toString());
+		// System.out.println(receive.getLocalSocketAddress());
+
+
 		byte[] buffer = new byte[65535];
 		DatagramPacket packet = null;
 
@@ -59,16 +70,25 @@ public class udpClient implements Runnable
 			temp = data(buffer).toString();
 			buffer = new byte[65535];
 
+			// temp = testTemp;
+
 			System.out.println("Received: [" + temp + "]");
 
 			tagID = getTaggedID(temp);
 			taggerID = getTagger(temp);
 
 			if(temp.contains(":"))
-			System.out.println(taggerID + " tagged " + tagID);
+			{
+				System.out.println(taggerID + " tagged " + tagID);
+
+				// toPAS[0] = taggerID;
+				// toPAS[1] = tagID;
+				// PAS.updateTable(toPAS);
+			}
+			
 
 			// send tag to player if not base hit
-			if (tagID != "" && tagID != redBaseHit && tagID != greenBaseHit)
+			if (tagID != "" && tagID != redBaseHit && tagID != greenBaseHit) {}
 				udpBroadcast.sendPacket(tagID);
 		}
 	}

@@ -12,8 +12,10 @@ public class Timer extends Thread
         timerText.setHorizontalAlignment(SwingConstants.CENTER);
         sec = time%60;
         min = (time - sec)/60;
-        //timerText.setFont()
-        timerText.setText(min + ":" + sec);
+        if (sec < 10)
+            timerText.setText(min + ":0" + sec%60);
+        else
+            timerText.setText(min + ":" + sec%60);
     }
 
     public int getTime()
@@ -29,9 +31,12 @@ public class Timer extends Thread
             if(sec < 0 && min !=0)
             {
                 min--;
-                sec=60;
+                sec=59;
             }
-            timerText.setText(min + ":" + sec);
+            if (sec < 10)
+                timerText.setText(min + ":0" + sec%60);
+            else
+                timerText.setText(min + ":" + sec%60);
             try
             {
                 Thread.sleep(999); //should sleep for slightly less than 1 second to allow for runtime of code

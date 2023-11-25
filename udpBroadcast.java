@@ -23,7 +23,7 @@ public class udpBroadcast
 	static String start = "202";
 	static String end = "221";
 	String broadcastData = "";
-	static int port = 7500;
+	static int port = 7501; //WAS 7500
 
 	udpBroadcast() {}
 
@@ -38,7 +38,7 @@ public class udpBroadcast
 			buffer = data.getBytes();
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ip, port);
 			broadcast.send(packet);
-			//System.out.println("Broadcast: " + data(buffer).toString());
+			// System.out.println("Broadcast: " + data(buffer).toString());
 		}
 		else
 		{
