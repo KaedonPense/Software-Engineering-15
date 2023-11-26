@@ -48,7 +48,7 @@ public class PlayerActionScreen extends JFrame {
         //gamePanel.setSize(1000,1000);
 		  timerGrid = new GridBagConstraints();
         timerGrid.fill = GridBagConstraints.BOTH;
-        timerGrid.gridwidth = 3;
+        timerGrid.gridwidth = 2;
     }
 
     // Sets teams
