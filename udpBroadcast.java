@@ -30,7 +30,7 @@ public class udpBroadcast
 	public static void sendPacket(String data) throws IOException
 	{
 		DatagramSocket broadcast = new DatagramSocket();
-		InetAddress ip = InetAddress.getLocalHost();
+		InetAddress ip = InetAddress.getByName("127.0.0.1");
 		byte buffer[] = null;
 		
 		if (data != "")

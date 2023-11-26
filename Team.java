@@ -131,4 +131,38 @@ public class Team extends JFrame
             next.addToPanel(teamPanel, gridC1, gridC2, gridC3, colorsArray[row%2]);
         }
     }
+
+	//  public void sortTable()
+   //  {
+   //      Player next;
+   //      int row = -1;
+   //      ArrayList<Player> tempPlayers = players;
+	// 	  ArrayList<Player> newTemp = new ArrayList<Player>();
+	// 	  ArrayList<Integer> entries;
+	// 	  int maxi = 0;
+	// 	  int maxscore = 0;
+
+	// 	goes through adding the highest to another list 
+	// 	then removing from templist until empty
+   //      while (!tempPlayers.isEmpty())
+	// 	  {
+	// 			for (int i = 0; i < tempPlayers.size(); i++)
+	// 			{
+	// 				if (tempPlayers.get(i).score > maxscore)
+	// 				{
+	// 					maxscore = tempPlayers.get(i).score;
+	// 					maxi = i;
+	// 				}
+	// 			}
+
+	// 			newTemp.add(tempPlayers.get(maxi - 1));
+	// 			tempPlayers.remove(maxi - 1);
+	// 	  }
+
+	// 	  if (!newTemp.isEmpty())
+	// 	  {	
+	// 			players = newTemp;
+	// 			createTableFromArray();
+	// 	  }
+   //  }
 }

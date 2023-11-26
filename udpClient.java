@@ -40,10 +40,10 @@ public class udpClient implements Runnable
 {
 	static String start = "202";
 	static String end = "221";
-	static String redBaseHit = "66";
+	static String redBaseHit = "53";
 	static String greenBaseHit = "43";
 	String testTemp = "";
-	// String toPAS[] = new String[2];
+	String toPAS[] = new String[2];
 
 	udpClient() {	}
 	
@@ -53,7 +53,7 @@ public class udpClient implements Runnable
 		String taggerID = "", tagID = "", temp = "";
 
 		DatagramSocket receive = new DatagramSocket(null);
-		SocketAddress clientAddress = new InetSocketAddress(InetAddress.getLocalHost(), 7500);
+		SocketAddress clientAddress = new InetSocketAddress(InetAddress.getByName("127.0.0.1"), 7500);
 		receive.bind(clientAddress);
 
 		// System.out.println("client socket address: " + clientAddress.toString());
@@ -81,9 +81,9 @@ public class udpClient implements Runnable
 			{
 				System.out.println(taggerID + " tagged " + tagID);
 
-				// toPAS[0] = taggerID;
-				// toPAS[1] = tagID;
-				// PAS.updateTable(toPAS);
+				toPAS[0] = taggerID;
+				toPAS[1] = tagID;
+				PlayerActionScreen.updateTagTable(toPAS);
 			}
 			
 
