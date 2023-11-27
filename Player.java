@@ -43,21 +43,20 @@ public class Player
     //public void tag()
     public void addPoints(int pointsToAdd, String Tagged)
     {
-      //  System.out.println("Adding Points"); 
-		 boolean sameTeam = false;
+        boolean sameTeam = false;
         for(int i = 0; i < inTeam.players.size();i++)
         {
             String eqID = inTeam.players.get(i).equipmentID;
             if(eqID == Tagged)
             {
-					 sameTeam = true;
+                sameTeam = true;
                 i=inTeam.players.size();
             }
         }
         if(!sameTeam)
         {
-				this.score+=pointsToAdd;
-            inTeam.teamScore+=pointsToAdd;
+            this.score=+pointsToAdd;
+            inTeam.teamScore=+pointsToAdd;
             this.scoreLabel.setText(String.valueOf(this.score));
             inTeam.updateTable();
         }
