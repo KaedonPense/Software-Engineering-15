@@ -28,13 +28,14 @@ public class Team extends JFrame
     public static Font columnHeadingFont = (PlayerEntryScreen.columnHeadingFont).deriveFont(25f);
     public static Font playerFont = (PlayerEntryScreen.textFieldFont).deriveFont(12f);
     static Border emptyBorder = BorderFactory.createEmptyBorder(5,0,5,0); //A transparent border so something doesn't fill its panel.
-    
+    static GridBagLayout layout = new GridBagLayout();
     Team(Color color1, Color color2)
     {
         colorsArray[0] = color1; //alternating colors
         colorsArray[1] = color2;
 
-        teamPanel = new JPanel(new GridBagLayout());
+        teamPanel = new JPanel();
+        teamPanel.setLayout(layout);
         teamPanel.setBackground(backgroundColor);
         //Initilize Grids
             //mainGrid
@@ -83,19 +84,25 @@ public class Team extends JFrame
             teamPanel.add(score,gridC3);
 
         teamScore = 0;
-        teamScoreLabel = new JLabel(String.valueOf(teamScore));
+        teamScoreLabel = new JLabel(String.valueOf(teamScore), SwingConstants.CENTER);
+        teamScoreLabel.setForeground(Color.WHITE);
+        teamScoreLabel.setFont(PlayerActionScreen.headingFont);
     }
     public void createTableFromArray()
     {
         for(int i = 0; i < players.size();i++)
         {
             this.setGridRow(i+1);
-            players.get(i).addToPanel(teamPanel,gridC1,gridC2,gridC3,colorsArray[i%2]);
+            Color c = colorsArray[i%2];
+            if(!players.get(i).exists)
+                c = backgroundColor;
+            players.get(i).addToPanel(teamPanel,gridC1,gridC2,gridC3,c);
         }
     }
     public void updateTable()
     {
         this.teamPanel.revalidate();
+        //this.sortTable();
     }
 
     public void addToPanel(JPanel parent, GridBagConstraints grid)
@@ -113,22 +120,81 @@ public class Team extends JFrame
     }
     public void sortTable()
     {
-        Player next;
-        int row = -1;
-        ArrayList<Player> tempPlayers = players;
-        while(tempPlayers.size() > 0)
+        ArrayList<Player> tempPlayers = new ArrayList<Player>();
+        int numPlayers = 0;
+        for(int i = 0; i <players.size(); i++)
         {
-            next = tempPlayers.get(0);
-            for(int i = 0; i < tempPlayers.size(); i++)
+            if(players.get(i).exists)
             {
-                if(tempPlayers.get(i).score > next.score)
+                numPlayers= numPlayers + 1;
+                tempPlayers.add(players.get(i));
+                this.removePlayer(i+1);
+            }
+        }
+        int row = 1;
+        this.setGridRow(row);
+        while(tempPlayers.size() > 1)
+        {
+            int high = tempPlayers.get(0).score;
+            int playerH = 0;
+            for(int i = 1; i < tempPlayers.size(); i++)
+            {
+                if(tempPlayers.get(i).score > high)
                 {
-                    next = tempPlayers.get(i);
+                    high = tempPlayers.get(i).score;
+                    playerH = i;
                 }
             }
-            row=+1;
-            this.setGridRow(row);
-            next.addToPanel(teamPanel, gridC1, gridC2, gridC3, colorsArray[row%2]);
+            tempPlayers.get(playerH).addToPanel(teamPanel,gridC1,gridC2,gridC3,colorsArray[row%2]);
+            tempPlayers.remove(playerH);
+            row = row + 1;
+            setGridRow(row);
+        }
+        tempPlayers.get(0).addToPanel(teamPanel,gridC1,gridC2,gridC3,colorsArray[row%2]);
+    }
+    void removePlayer(int i)
+    {   
+        Component[] components = teamPanel.getComponents();
+        for (Component component : components)
+        {
+            GridBagConstraints c = layout.getConstraints(component);
+            if(c.gridy == i)
+            {
+                teamPanel.remove(component);
+            }
         }
     }
 }
+	//  public void sortTable()
+   //  {
+   //      Player next;
+   //      int row = -1;
+   //      ArrayList<Player> tempPlayers = players;
+	// 	  ArrayList<Player> newTemp = new ArrayList<Player>();
+	// 	  ArrayList<Integer> entries;
+	// 	  int maxi = 0;
+	// 	  int maxscore = 0;
+
+	// 	goes through adding the highest to another list 
+	// 	then removing from templist until empty
+   //      while (!tempPlayers.isEmpty())
+	// 	  {
+	// 			for (int i = 0; i < tempPlayers.size(); i++)
+	// 			{
+	// 				if (tempPlayers.get(i).score > maxscore)
+	// 				{
+	// 					maxscore = tempPlayers.get(i).score;
+	// 					maxi = i;
+	// 				}
+	// 			}
+
+	// 			newTemp.add(tempPlayers.get(maxi - 1));
+	// 			tempPlayers.remove(maxi - 1);
+	// 	  }
+
+	// 	  if (!newTemp.isEmpty())
+	// 	  {	
+	// 			players = newTemp;
+	// 			createTableFromArray();
+	// 	  }
+   //  }

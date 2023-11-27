@@ -14,8 +14,13 @@ public class Player
     public JLabel nameLabel;
     public JLabel scoreLabel;
     public Team inTeam;
-
+    JPanel styleB = new JPanel();
     Font playerFont = inTeam.playerFont;
+    Font styleFont = new Font("impact", Font.BOLD, 20);
+    Border raisedBevel = BorderFactory.createRaisedBevelBorder();
+    Border loweredBevel = BorderFactory.createLoweredBevelBorder();
+    Border compound = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
+    public boolean exists = false;
 
     Player(String ID, String name, String EQID, Team team)
     {
@@ -25,9 +30,12 @@ public class Player
         this.playerID = ID;
         this.base = false;
         this.inTeam = team;
+        this.exists = true;
 
-        baseLabel = new JLabel(" ", SwingConstants.CENTER);
-        baseLabel.setFont(playerFont);
+        baseLabel = new JLabel("B", SwingConstants.CENTER);
+        baseLabel.setFont(styleFont);
+        baseLabel.setBackground(Color.yellow);
+        baseLabel.setBorder(compound);
         nameLabel = new JLabel(this.codename, SwingConstants.CENTER);
         nameLabel.setFont(playerFont);
         scoreLabel = new JLabel(String.valueOf(this.score), SwingConstants.CENTER);
@@ -43,21 +51,24 @@ public class Player
     //public void tag()
     public void addPoints(int pointsToAdd, String Tagged)
     {
-        boolean sameTeam = false;
+      //  System.out.println("Adding Points"); 
+		boolean sameTeam = false;
         for(int i = 0; i < inTeam.players.size();i++)
         {
             String eqID = inTeam.players.get(i).equipmentID;
             if(eqID == Tagged)
             {
-                sameTeam = true;
+					 sameTeam = true;
                 i=inTeam.players.size();
             }
         }
         if(!sameTeam)
         {
-            this.score=+pointsToAdd;
-            inTeam.teamScore=+pointsToAdd;
+			this.score+=pointsToAdd;
+            inTeam.teamScore+=pointsToAdd;
+            inTeam.teamScoreLabel.setText(String.valueOf(inTeam.teamScore));
             this.scoreLabel.setText(String.valueOf(this.score));
+            inTeam.sortTable();
             inTeam.updateTable();
         }
         else
@@ -67,11 +78,9 @@ public class Player
     }
     public void addToPanel(JPanel parent, GridBagConstraints g1, GridBagConstraints g2, GridBagConstraints g3, Color color)
     {
+        this.styleB.setBackground(color);
+        parent.add(this.styleB,g1);
         JPanel panel = new JPanel();
-        panel.setBackground(color);
-        panel.add(baseLabel);
-        parent.add(panel,g1);
-        panel = new JPanel();
         panel.setBackground(color);
         panel.add(nameLabel);
         parent.add(panel,g2);
@@ -79,5 +88,23 @@ public class Player
         panel.setBackground(color);
         panel.add(scoreLabel);
         parent.add(panel, g3);
+    }
+    public void taggedBase()
+    {
+       styleB.add(baseLabel);
+    }
+
+    public void setPanel(int row, JPanel parent, Color color)
+    {
+        styleB.setBackground(color);
+        parent.setComponentZOrder(this.styleB, row * 3);
+        JPanel panel = new JPanel();
+        panel.setBackground(color);
+        panel.add(nameLabel);
+        parent.setComponentZOrder(panel, row*3 + 1);
+        panel = new JPanel();
+        panel.setBackground(color);
+        panel.add(scoreLabel);
+        parent.setComponentZOrder(panel,row*3 + 2);
     }
 }
