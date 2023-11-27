@@ -66,9 +66,7 @@ public class Main extends JFrame
                 
 
 				//Creation of udpClient Thread
-					 udpClient client = new udpClient();
-					 Thread c = new Thread(client);
-					 c.start();
+					 
 
         }
     /* @discription: Keep running Function
@@ -95,6 +93,9 @@ public class Main extends JFrame
                                 }
                                 ControllingScreen = Screens[1]; //Change the screen to display to the player entry Screen
                                 playerEntry.visible(this, true); //set the entry screen to be visible
+                                udpClient client = new udpClient();
+					            Thread c = new Thread(client);
+					            c.start();
                                 this.pack();
                         	break;
 
@@ -128,7 +129,6 @@ public class Main extends JFrame
 											gameScreen.visible(this, false);
 											playerEntry.visible(this, true);
 											this.pack();
-
 											gameScreen = new PlayerActionScreen(this);
 										  }
                                 break;

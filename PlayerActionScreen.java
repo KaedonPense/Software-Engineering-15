@@ -25,11 +25,11 @@ public class PlayerActionScreen extends JFrame implements KeyListener {
 
     Timer timer;
     Music music = new Music();
-    static Log log = new Log();
+    static Log log;
     GridBagConstraints timerGrid;
     boolean inStartup;
 	 static List<ArrayList<String>> tagTable = Collections.synchronizedList(new ArrayList<ArrayList<String>>());
-
+    boolean flashWining = false;
 
     //Colors
     static Color red = new Color(200,0,0);      //main red team color
@@ -261,9 +261,8 @@ public class PlayerActionScreen extends JFrame implements KeyListener {
                 heading.add(greenTeam.teamScoreLabel,timerGrid);
                 timerGrid.gridx = 2;
                 heading.add(redTeam.teamScoreLabel,timerGrid);
-
-                
-		music.start();
+		        music.start();
+                log = new Log();
                 try {
                     udpBroadcast.sendPacket(startSignal);
                     System.out.println("Transmitting game start signal.");
@@ -283,11 +282,12 @@ public class PlayerActionScreen extends JFrame implements KeyListener {
                     System.exit(0);
                 }
                 log.close();
+                timerSem.release();
             }
         }
 
         if (!inStartup) {
-            
+            calcWining();
         }
 
         if (isGameOver)
@@ -328,4 +328,16 @@ public class PlayerActionScreen extends JFrame implements KeyListener {
 			case KeyEvent.VK_F5: f5 = true; break;
 		}
 	 }
+
+     void calcWining()
+     {
+        Color c = Color.WHITE;
+        if(flashWining)
+            c = Color.LIGHT_GRAY;
+        if(greenTeam.teamScore > redTeam.teamScore)
+            greenTeam.teamScoreLabel.setForeground(c);
+        else
+            redTeam.teamScoreLabel.setForeground(c);
+        flashWining = !flashWining;
+     }
 }
