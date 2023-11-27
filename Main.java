@@ -31,7 +31,7 @@ public class Main extends JFrame
         StartScreen startScreen = new StartScreen(this);
         PlayerEntryScreen playerEntry= new PlayerEntryScreen(this);     //Initilises the Player Entry Panel class. Contains the creation and controller for the class. "this" is refering to the JFrame "window" 
         PlayerActionScreen gameScreen = new PlayerActionScreen(this);
-        public static boolean debug = true;
+        public static boolean debug = false;
 
     /* @description: The main function to be called when the application is to be ran
      *     @use : Initilizes Main, and starts the function to keep running
@@ -107,7 +107,8 @@ public class Main extends JFrame
                                     playerEntry.Update();
 									if (playerEntry.moveToPlayAction)
                                     {
-                                        greenTeam = new Team(playerEntry.green, playerEntry.darkGreen);
+                                        playerEntry.moveToPlayAction = false;
+													 greenTeam = new Team(playerEntry.green, playerEntry.darkGreen);
                                         redTeam = new Team(playerEntry.red, playerEntry.darkRed);
                                         ControllingScreen = Screens[2];
                                         playerEntry.visible(this,false);
@@ -120,6 +121,16 @@ public class Main extends JFrame
                                 break;
                             case("gameScreen"): //i.e Screens[2]
                                 gameScreen.update();
+
+										  if (gameScreen.moveToPlayerEntry)
+										  {
+											ControllingScreen = Screens[1];
+											gameScreen.visible(this, false);
+											playerEntry.visible(this, true);
+											this.pack();
+
+											gameScreen = new PlayerActionScreen(this);
+										  }
                                 break;
                         }                    
                     //Delay statement - thread saver

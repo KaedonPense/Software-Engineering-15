@@ -4,8 +4,10 @@ import java.util.concurrent.Semaphore;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.awt.event.KeyListener;
+import java.awt.event.KeyEvent;
 
-public class PlayerActionScreen extends JFrame {
+public class PlayerActionScreen extends JFrame implements KeyListener {
     //Misc
     static JPanel gamePanel;
     static GridBagConstraints cons;
@@ -41,6 +43,10 @@ public class PlayerActionScreen extends JFrame {
     public static Font headingFont = new Font("impact", Font.ITALIC, 35);
     Font columnHeadingFont = new Font("times new roman", Font.PLAIN, 24);
     Font textFieldFont = new Font("times new roman" , Font.PLAIN, 20);
+
+	 //Key
+	 boolean f5; // switch to PlayerEntry
+	 boolean moveToPlayerEntry;
     
     // Constructor
     PlayerActionScreen(JFrame frame) 
@@ -58,6 +64,7 @@ public class PlayerActionScreen extends JFrame {
         //timerGrid.gridwidth = 2;
         timerGrid.gridx = 1;
         timerGrid.gridy = 0;
+
     }
 
     // Sets teams
@@ -120,6 +127,10 @@ public class PlayerActionScreen extends JFrame {
         greenTeam.addToPanel(gamePanel, cons);
 		  cons.gridx = 1;
         redTeam.addToPanel(gamePanel, cons);
+
+		  gamePanel.setFocusable(true);
+		  gamePanel.requestFocusInWindow();
+
         gamePanel.revalidate();
     }
 
@@ -245,7 +256,7 @@ public class PlayerActionScreen extends JFrame {
         if (timer.getTime()==0) {
             if (inStartup) {
                 inStartup = false;
-                timer.setTime(360); // Begins proper game timer of 6min (360sec)
+                timer.setTime(10); // Begins proper game timer of 6min (360sec)
                 timerGrid.gridx = 0;
                 heading.add(greenTeam.teamScoreLabel,timerGrid);
                 timerGrid.gridx = 2;
@@ -288,7 +299,17 @@ public class PlayerActionScreen extends JFrame {
 
     void gameOver() {
         System.out.println("Game Over");
-        System.exit(0);
+ 
+		  gamePanel.addKeyListener(this);
+
+		  while (!f5) {} // wait for key press
+		  if (f5) // switch to PlayerEntry
+		  {
+			  System.out.println("Switch Screen");
+			  moveToPlayerEntry = true;
+			  
+			  f5 = false;
+		  }
     }
     void visible(JFrame frame, boolean addRemove)
     {
@@ -297,4 +318,14 @@ public class PlayerActionScreen extends JFrame {
         else
             frame.remove(gamePanel);
     }
+
+	 public void keyPressed(KeyEvent e) {} // not used
+	 public void keyTyped(KeyEvent e) {} // not used
+	 public void keyReleased(KeyEvent e)
+	 {
+		switch(e.getKeyCode())
+		{
+			case KeyEvent.VK_F5: f5 = true; break;
+		}
+	 }
 }
