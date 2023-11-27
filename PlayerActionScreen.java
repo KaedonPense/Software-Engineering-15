@@ -25,6 +25,7 @@ public class PlayerActionScreen extends JFrame implements KeyListener {
 
     Timer timer;
     Music music = new Music();
+    boolean transmitted;
     static Log log;
     GridBagConstraints timerGrid;
     boolean inStartup;
@@ -273,17 +274,22 @@ public class PlayerActionScreen extends JFrame implements KeyListener {
                 }
             } else {
                 isGameOver = true;
-                try {
-                    udpBroadcast.sendPacket(endSignal);
-                    System.out.println("Transmitting game end signal.");
-                } catch (Exception e) {
-                    System.out.println("Could not broadcast end signal.");
-                    e.printStackTrace();
-                    System.exit(0);
+                if(!transmitted)
+                {
+                    try {
+                        udpBroadcast.sendPacket(endSignal);
+                        System.out.println("Transmitting game end signal.");
+                    } catch (Exception e) {
+                        System.out.println("Could not broadcast end signal.");
+                        e.printStackTrace();
+                        System.exit(0);
+                    }
+                    log.close();
+                    timerSem.release();
                 }
-                log.close();
-                timerSem.release();
+
             }
+        boolean transmitted = false;
         }
 
         if (!inStartup) {
@@ -291,25 +297,30 @@ public class PlayerActionScreen extends JFrame implements KeyListener {
         }
 
         if (isGameOver)
-	{
-	   music.stopPlaying();
+	    {
+	        music.stopPlaying();
             gameOver();
-	}
+	    }
     }
 
     void gameOver() {
-        System.out.println("Game Over");
+        if(!transmitted)
+        {
+            System.out.println("Game Over");
+            transmitted = true;
+        }
  
 		  gamePanel.addKeyListener(this);
 
-		  while (!f5) {} // wait for key press
+		  //while (!f5) { // wait for key press
 		  if (f5) // switch to PlayerEntry
 		  {
 			  System.out.println("Switch Screen");
 			  moveToPlayerEntry = true;
 			  
 			  f5 = false;
-		  }
+		  //}
+        }
     }
     void visible(JFrame frame, boolean addRemove)
     {
@@ -325,7 +336,7 @@ public class PlayerActionScreen extends JFrame implements KeyListener {
 	 {
 		switch(e.getKeyCode())
 		{
-			case KeyEvent.VK_F5: f5 = true; break;
+			case KeyEvent.VK_F6: f5 = true; break;
 		}
 	 }
 

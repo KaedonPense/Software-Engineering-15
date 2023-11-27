@@ -499,7 +499,8 @@ public class PlayerEntryScreen extends JFrame implements ActionListener, KeyList
                 else
             {
                     frame.remove(playerEntryPanel);
-                    database.CloseConnection();
+                    if(database.connect !=null)
+                        database.CloseConnection();
                     //System.out.println("Removed Player Entry from frame");
             }
         }

@@ -109,7 +109,7 @@ public class Main extends JFrame
 									if (playerEntry.moveToPlayAction)
                                     {
                                         playerEntry.moveToPlayAction = false;
-													 greenTeam = new Team(playerEntry.green, playerEntry.darkGreen);
+								        greenTeam = new Team(playerEntry.green, playerEntry.darkGreen);
                                         redTeam = new Team(playerEntry.red, playerEntry.darkRed);
                                         ControllingScreen = Screens[2];
                                         playerEntry.visible(this,false);
@@ -128,7 +128,7 @@ public class Main extends JFrame
 											ControllingScreen = Screens[1];
 											gameScreen.visible(this, false);
 											playerEntry.visible(this, true);
-											this.pack();
+											//this.pack();
 											gameScreen = new PlayerActionScreen(this);
 										  }
                                 break;
