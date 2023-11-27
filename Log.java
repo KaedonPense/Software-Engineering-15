@@ -35,6 +35,7 @@ public class Log extends JFrame
         this.revalidate();
         row = row + 1;
         grid.gridy = row;
+        this.pack();
     }
     public void greenBase(String Tagger)
     {
@@ -44,6 +45,7 @@ public class Log extends JFrame
         this.revalidate();
         row = row + 1;
         grid.gridy = row;
+        this.pack();
     }
     public void redBase(String Tagger)
     {
@@ -53,6 +55,7 @@ public class Log extends JFrame
         this.revalidate();
         row = row + 1;
         grid.gridy = row;
+        this.pack();
     }
     public void friendlyFire(String Tagger)
     {
@@ -62,6 +65,7 @@ public class Log extends JFrame
         this.revalidate();
         row = row + 1;
         grid.gridy = row;
+        this.pack();
     }
     public void close()
     {
