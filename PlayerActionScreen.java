@@ -21,6 +21,7 @@ public class PlayerActionScreen extends JFrame {
     static Team redTeam;
 
     Timer timer;
+    Music music = new Music();
     GridBagConstraints timerGrid;
     boolean inStartup;
 	 static List<ArrayList<String>> tagTable = Collections.synchronizedList(new ArrayList<ArrayList<String>>());
@@ -196,6 +197,7 @@ public class PlayerActionScreen extends JFrame {
             if (inStartup) {
                 inStartup = false;
                 timer.setTime(360); // Begins proper game timer of 6min (360sec)
+		music.start();
                 try {
                     udpBroadcast.sendPacket(startSignal);
                     System.out.println("Transmitting game start signal.");
@@ -222,7 +224,10 @@ public class PlayerActionScreen extends JFrame {
         }
 
         if (isGameOver)
+	{
+	   music.stopPlaying();
             gameOver();
+	}
     }
 
     void gameOver() {
