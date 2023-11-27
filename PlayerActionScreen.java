@@ -257,7 +257,7 @@ public class PlayerActionScreen extends JFrame implements KeyListener {
         if (timer.getTime()==0) {
             if (inStartup) {
                 inStartup = false;
-                timer.setTime(10); // Begins proper game timer of 6min (360sec)
+                timer.setTime(360); // Begins proper game timer of 6min (360sec)
                 timerGrid.gridx = 0;
                 heading.add(greenTeam.teamScoreLabel,timerGrid);
                 timerGrid.gridx = 2;
